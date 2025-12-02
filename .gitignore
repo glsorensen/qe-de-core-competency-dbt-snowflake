@@ -1,0 +1,24 @@
+# dbt generated files
+target/
+dbt_packages/
+logs/
+dbt_modules/
+
+# Python
+*.pyc
+__pycache__/
+venv/
+.venv/
+
+# OS files
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Environment & Credentials (NEVER commit these!)
+.env
+profiles.yml
+
+# Keep seeds/ tracked - they contain sample data for the tutorial

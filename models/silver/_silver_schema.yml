@@ -1,0 +1,90 @@
+version: 2
+
+# ============================================================================
+# SILVER LAYER - STAGING MODELS
+# ============================================================================
+# Tests and documentation for cleaned/standardized staging models
+# ============================================================================
+
+models:
+  - name: stg_customers
+    description: Cleaned and standardized customer data
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+      - name: email
+        tests: [unique, not_null]
+
+  - name: stg_products
+    description: Cleaned product catalog with calculated margins
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+      - name: price
+        tests: [not_null]
+      - name: cost
+        tests: [not_null]
+
+  - name: stg_orders
+    description: Cleaned order data with business flags
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: order_status
+        tests:
+          - accepted_values:
+              values:
+                [
+                  'pending',
+                  'processing',
+                  'shipped',
+                  'delivered',
+                  'cancelled',
+                  'returned',
+                ]
+
+  - name: stg_order_items
+    description: Cleaned order line items with discount calculations
+    columns:
+      - name: order_item_id
+        tests: [unique, not_null]
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+  - name: stg_marketing_campaigns
+    description: Cleaned marketing campaign data with KPIs
+    columns:
+      - name: campaign_id
+        tests: [unique, not_null]
+      - name: campaign_type
+        tests:
+          - accepted_values:
+              values:
+                [
+                  'email',
+                  'social',
+                  'search',
+                  'display',
+                  'affiliate',
+                  'influencer',
+                  'other',
+                ]

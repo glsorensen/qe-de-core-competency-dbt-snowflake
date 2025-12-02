@@ -1,0 +1,76 @@
+version: 2
+
+# ============================================================================
+# BRONZE LAYER - RAW DATA SOURCES
+# ============================================================================
+# This file defines where your raw data lives in Snowflake.
+# In dbt, you reference these using: {{ source('raw', 'table_name') }}
+#
+# The seed CSV files (in /seeds folder) are loaded here via `dbt seed`
+# ============================================================================
+
+sources:
+  - name: raw
+    description: Raw e-commerce data (Bronze Layer)
+    database: DBT_LEARNING
+    schema: raw
+
+    tables:
+      # Customer master data
+      - name: customers
+        description: Customer information from the CRM system
+        columns:
+          - name: customer_id
+            description: Unique customer identifier
+            tests:
+              - unique
+              - not_null
+          - name: email
+            description: Customer email address
+            tests:
+              - unique
+              - not_null
+
+      # Order transactions
+      - name: orders
+        description: Order header data from e-commerce platform
+        columns:
+          - name: order_id
+            description: Unique order identifier
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            description: Foreign key to customers
+            tests:
+              - not_null
+
+      # Order line items
+      - name: order_items
+        description: Individual products within each order
+        columns:
+          - name: order_item_id
+            description: Unique line item identifier
+            tests:
+              - unique
+              - not_null
+
+      # Product catalog
+      - name: products
+        description: Product catalog data
+        columns:
+          - name: product_id
+            description: Unique product identifier
+            tests:
+              - unique
+              - not_null
+
+      # Marketing campaigns
+      - name: marketing_campaigns
+        description: Marketing campaign performance data
+        columns:
+          - name: campaign_id
+            description: Unique campaign identifier
+            tests:
+              - unique
+              - not_null

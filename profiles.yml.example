@@ -1,0 +1,34 @@
+# =============================================================================
+# dbt Profile Configuration for Snowflake
+# =============================================================================
+# SETUP INSTRUCTIONS:
+# 1. Copy this file to ~/.dbt/profiles.yml
+# 2. Update with your Snowflake credentials
+# 3. Run `dbt debug` to test the connection
+# =============================================================================
+
+dbt_learning_sandbox:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      
+      # Slalom Snowflake account
+      account: SLALOM-SNOWFLAKE_ILABS_QECATALYST
+      
+      # Your Snowflake username (your Slalom email)
+      user: YOUR_EMAIL@SLALOM.COM
+      
+      # Your password (use SSO or set up key-pair auth for better security)
+      authenticator: externalbrowser  # This enables SSO login
+      
+      # Role - using PUBLIC as shown in account details
+      role: PUBLIC
+      
+      # Database and warehouse
+      database: DBT_LEARNING
+      warehouse: SALES_LOAD
+      schema: RAW
+      
+      # Number of parallel threads for dbt to use
+      threads: 4

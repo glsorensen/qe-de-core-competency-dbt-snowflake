@@ -1,0 +1,11 @@
+product_id,product_name,product_category,product_subcategory,brand,price,cost,sku,is_active,created_at,updated_at
+1,Wireless Bluetooth Headphones,Electronics,Audio,SoundMax,79.99,35.00,ELEC-AUD-001,true,2023-01-01 00:00:00,2024-01-15 10:00:00
+2,Organic Cotton T-Shirt,Clothing,Tops,EcoWear,29.99,12.00,CLTH-TOP-001,true,2023-01-01 00:00:00,2024-02-20 11:30:00
+3,Stainless Steel Water Bottle,Home,Kitchen,HydroLife,24.99,8.50,HOME-KIT-001,true,2023-01-01 00:00:00,2024-03-10 09:15:00
+4,Running Shoes,Sports,Footwear,SprintPro,129.99,55.00,SPRT-FTW-001,true,2023-01-01 00:00:00,2024-01-25 14:45:00
+5,Yoga Mat,Sports,Fitness,FlexFit,39.99,15.00,SPRT-FIT-001,true,2023-01-01 00:00:00,2024-04-05 16:00:00
+6,Coffee Maker,Home,Appliances,BrewMaster,89.99,40.00,HOME-APP-001,true,2023-01-01 00:00:00,2024-02-15 08:30:00
+7,Leather Wallet,Accessories,Bags,LuxCraft,49.99,20.00,ACCS-BAG-001,true,2023-01-01 00:00:00,2024-05-01 13:00:00
+8,Smartphone Case,Electronics,Accessories,TechShield,19.99,5.00,ELEC-ACC-001,true,2023-01-01 00:00:00,2024-03-20 10:30:00
+9,Desk Lamp,Home,Lighting,BrightSpace,34.99,14.00,HOME-LGT-001,true,2023-01-01 00:00:00,2024-04-18 15:15:00
+10,Protein Powder,Health,Supplements,FitFuel,44.99,18.00,HLTH-SUP-001,true,2023-01-01 00:00:00,2024-05-10 11:45:00

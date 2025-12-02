@@ -1,0 +1,16 @@
+order_id,customer_id,order_date,order_status,total_amount,shipping_cost,tax_amount,discount_amount,payment_method,shipping_address,created_at
+1,1,2023-06-15,delivered,125.50,8.99,10.51,0.00,credit_card,123 Main St,2023-06-15 10:30:00
+2,2,2023-07-20,delivered,89.99,5.99,7.20,10.00,paypal,456 Oak Ave,2023-07-20 14:15:00
+3,1,2023-08-10,delivered,245.00,12.99,19.60,25.00,credit_card,123 Main St,2023-08-10 09:45:00
+4,3,2023-09-05,delivered,567.50,0.00,45.40,50.00,credit_card,789 Pine Rd,2023-09-05 16:00:00
+5,4,2023-10-12,delivered,75.25,5.99,6.02,0.00,paypal,321 Elm St,2023-10-12 11:30:00
+6,5,2023-11-01,cancelled,199.99,8.99,16.00,20.00,credit_card,654 Maple Dr,2023-11-01 13:45:00
+7,3,2023-11-25,delivered,890.00,0.00,71.20,100.00,credit_card,789 Pine Rd,2023-11-25 10:00:00
+8,6,2023-12-10,delivered,145.75,5.99,11.66,15.00,paypal,987 Cedar Ln,2023-12-10 15:20:00
+9,8,2024-01-05,delivered,425.00,12.99,34.00,0.00,credit_card,147 Birch Way,2024-01-05 09:00:00
+10,1,2024-01-20,delivered,89.99,5.99,7.20,0.00,paypal,123 Main St,2024-01-20 14:30:00
+11,2,2024-02-14,delivered,299.50,8.99,23.96,30.00,credit_card,456 Oak Ave,2024-02-14 11:15:00
+12,5,2024-03-01,delivered,175.00,5.99,14.00,0.00,credit_card,654 Maple Dr,2024-03-01 16:45:00
+13,8,2024-03-15,shipped,650.00,0.00,52.00,75.00,paypal,147 Birch Way,2024-03-15 10:30:00
+14,10,2024-04-02,delivered,225.50,8.99,18.04,25.00,credit_card,258 Spruce Ct,2024-04-02 13:00:00
+15,9,2024-04-20,pending,45.99,5.99,3.68,0.00,paypal,369 Willow St,2024-04-20 09:30:00

@@ -1,0 +1,2 @@
+# dbt with Snowflake adapter
+dbt-snowflake>=1.7.0

@@ -1,0 +1,46 @@
+name: 'snowcommerce_analytics'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt_learning_sandbox'
+
+# These configurations specify where dbt should look for different types of files.
+model-paths: ['models']
+seed-paths: ['seeds']
+macro-paths: ['macros']
+test-paths: ['tests']
+analysis-paths: ['analyses']
+snapshot-paths: ['snapshots']
+
+clean-targets:
+  - 'target'
+  - 'dbt_packages'
+
+# ============================================================================
+# MEDALLION ARCHITECTURE CONFIGURATION
+# ============================================================================
+# Bronze Layer → Silver Layer → Gold Layer
+# Each layer has its own schema in Snowflake for clear data organization
+# ============================================================================
+
+models:
+  snowcommerce_analytics:
+    # Bronze: Raw data sources (defined in sources.yml, no models here)
+    bronze:
+      +schema: raw
+
+    # Silver: Cleaned staging models (stg_*)
+    silver:
+      +materialized: view # Views for staging = fast & low storage
+      +schema: silver
+
+    # Gold: Business-ready models (dim_*, fct_*, rpt_*)
+    gold:
+      +materialized: table # Tables for analytics = fast queries
+      +schema: gold
+
+# Seed configurations (CSV files loaded to Snowflake)
+seeds:
+  snowcommerce_analytics:
+    +schema: raw # Seeds go to raw schema (Bronze layer)

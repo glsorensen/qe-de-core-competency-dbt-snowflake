@@ -1,0 +1,11 @@
+customer_id,first_name,last_name,email,phone,date_of_birth,created_at,updated_at,customer_lifetime_value,acquisition_channel
+1,John,Smith,john.smith@email.com,555-123-4567,1985-03-15,2023-01-15 10:30:00,2024-06-01 14:22:00,1250.00,organic
+2,Sarah,Johnson,sarah.j@email.com,555-234-5678,1990-07-22,2023-02-20 09:15:00,2024-05-15 11:30:00,850.50,paid_search
+3,Michael,Williams,m.williams@email.com,555-345-6789,1978-11-08,2023-03-10 14:45:00,2024-04-20 16:45:00,2100.00,referral
+4,Emily,Brown,emily.brown@email.com,555-456-7890,1995-01-30,2023-04-05 11:20:00,2024-06-10 09:00:00,450.25,social
+5,David,Jones,david.jones@email.com,555-567-8901,1982-09-12,2023-05-12 16:00:00,2024-03-25 13:15:00,1800.75,email
+6,Lisa,Garcia,lisa.garcia@email.com,555-678-9012,1988-04-25,2023-06-08 08:30:00,2024-05-30 10:45:00,625.00,organic
+7,James,Miller,james.m@email.com,555-789-0123,1992-12-03,2023-07-20 13:00:00,2024-06-05 15:30:00,0.00,paid_search
+8,Jennifer,Davis,jen.davis@email.com,555-890-1234,1975-06-18,2023-08-14 10:15:00,2024-04-10 12:00:00,3200.50,referral
+9,Robert,Martinez,rob.martinez@email.com,555-901-2345,1998-02-28,2023-09-01 15:30:00,2024-06-12 08:45:00,175.00,social
+10,Amanda,Anderson,amanda.a@email.com,555-012-3456,1986-08-07,2023-10-18 09:45:00,2024-05-20 14:00:00,950.25,email

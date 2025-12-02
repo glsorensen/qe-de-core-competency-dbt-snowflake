@@ -1,0 +1,8 @@
+# dbt Packages - External libraries for dbt
+# Install with: dbt deps
+
+packages:
+  # dbt_utils: Common SQL helpers and tests
+  # Docs: https://hub.getdbt.com/dbt-labs/dbt_utils
+  - package: dbt-labs/dbt_utils
+    version: 1.3.1

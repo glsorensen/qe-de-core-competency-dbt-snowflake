@@ -1,0 +1,90 @@
+version: 2
+
+# ============================================================================
+# GOLD LAYER - BUSINESS-READY MODELS
+# ============================================================================
+# Tests and documentation for dimensions, facts, and reports
+# ============================================================================
+
+models:
+  - name: dim_customers
+    description: Customer dimension with aggregated metrics and segmentation
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+      - name: email
+        tests: [unique, not_null]
+      - name: customer_segment
+        description: Based on purchase frequency
+        tests:
+          - accepted_values:
+              values:
+                [
+                  'never_purchased',
+                  'one_time',
+                  'occasional',
+                  'regular',
+                  'champion',
+                ]
+      - name: value_tier
+        description: Based on lifetime revenue
+        tests:
+          - accepted_values:
+              values:
+                ['no_value', 'low_value', 'medium_value', 'high_value', 'vip']
+      - name: activity_status
+        description: Based on recency of orders
+        tests:
+          - accepted_values:
+              values: ['never_ordered', 'active', 'at_risk', 'churned']
+
+  - name: fct_orders
+    description: Orders fact table with denormalized customer info
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+
+  - name: fct_order_items
+    description: Order line items fact table with product and profit data
+    columns:
+      - name: order_item_id
+        tests: [unique, not_null]
+      - name: order_id
+        tests: [not_null]
+      - name: product_id
+        tests: [not_null]
+      - name: customer_id
+        tests: [not_null]
+
+  - name: rpt_customer_metrics
+    description: Customer analytics report by segment, tier, and channel
+    columns:
+      - name: customer_count
+        tests: [not_null]
+
+  - name: rpt_product_performance
+    description: Product sales and profit analysis report
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+      - name: performance_tier
+        tests:
+          - accepted_values:
+              values:
+                [
+                  'top_performer',
+                  'strong_performer',
+                  'moderate_performer',
+                  'low_performer',
+                ]
+      - name: margin_tier
+        tests:
+          - accepted_values:
+              values: ['high_margin', 'medium_margin', 'low_margin']
