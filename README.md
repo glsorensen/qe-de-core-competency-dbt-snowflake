@@ -84,7 +84,28 @@ source venv/bin/activate  # Mac/Linux
 pip install -r requirements.txt
 ```
 
-### Step 3: Configure Snowflake Connection
+### Step 3: Create Your Own Database in Snowflake
+
+Each student should create their own database to avoid conflicts with other learners.
+
+1. **Log into Snowflake** using your Slalom SSO credentials
+2. **Open a SQL Worksheet** and run:
+
+```sql
+-- Replace YOUR_NAME with your name or initials (e.g., JSMITH, GUNNAR)
+CREATE DATABASE DBT_LEARNING_YOUR_NAME;
+```
+
+**Examples:**
+
+```sql
+CREATE DATABASE DBT_LEARNING_JSMITH;
+CREATE DATABASE DBT_LEARNING_GUNNAR;
+```
+
+> **Note:** dbt will automatically create the required schemas (`RAW`, `SILVER`, `GOLD`) when you run your first commands.
+
+### Step 4: Configure Snowflake Connection
 
 1. Copy the example profile:
 
@@ -105,15 +126,15 @@ dbt_learning_sandbox:
       user: YOUR_EMAIL@SLALOM.COM # Your Slalom email
       authenticator: externalbrowser # Enables SSO login
       role: PUBLIC
-      database: DBT_LEARNING
+      database: DBT_LEARNING_YOUR_NAME # ⚠️ Use YOUR database name!
       warehouse: SALES_LOAD
       schema: RAW
       threads: 4
 ```
 
-### Step 4: Verify Snowflake Access
+### Step 5: Verify Snowflake Access
 
-The database `DBT_LEARNING` and warehouse `SALES_LOAD` are already configured for Slalom users. You can verify access by running:
+Verify your connection by running:
 
 ```bash
 dbt debug
@@ -121,16 +142,7 @@ dbt debug
 
 You should see "All checks passed!" ✅
 
-> **Note:** If you're setting up your own Snowflake account, you'll need to create the database and schemas:
->
-> ```sql
-> CREATE DATABASE IF NOT EXISTS DBT_LEARNING;
-> CREATE SCHEMA IF NOT EXISTS DBT_LEARNING.RAW;
-> CREATE SCHEMA IF NOT EXISTS DBT_LEARNING.SILVER;
-> CREATE SCHEMA IF NOT EXISTS DBT_LEARNING.GOLD;
-> ```
-
-### Step 5: Run the Tutorial!
+### Step 6: Run the Tutorial!
 
 ```bash
 # Install dbt packages

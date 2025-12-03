@@ -2,9 +2,24 @@
 # dbt Profile Configuration for Snowflake
 # =============================================================================
 # SETUP INSTRUCTIONS:
-# 1. Copy this file to ~/.dbt/profiles.yml
-# 2. Update with your Snowflake credentials
-# 3. Run `dbt debug` to test the connection
+# 1. Create your own database in Snowflake (see Step 0 below)
+# 2. Copy this file to ~/.dbt/profiles.yml
+# 3. Update with your Snowflake credentials and database name
+# 4. Run `dbt debug` to test the connection
+# =============================================================================
+#
+# STEP 0: CREATE YOUR OWN DATABASE
+# ---------------------------------
+# Each student should create their own database to avoid conflicts.
+# Run this in a Snowflake worksheet (replace YOUR_NAME with your name/initials):
+#
+#   CREATE DATABASE DBT_LEARNING_YOUR_NAME;
+#
+# Examples:
+#   CREATE DATABASE DBT_LEARNING_JSMITH;
+#   CREATE DATABASE DBT_LEARNING_GUNNAR;
+#
+# Then update the 'database' field below with your database name.
 # =============================================================================
 
 dbt_learning_sandbox:
@@ -26,7 +41,8 @@ dbt_learning_sandbox:
       role: PUBLIC
       
       # Database and warehouse
-      database: DBT_LEARNING
+      # ⚠️  IMPORTANT: Replace with YOUR database name (e.g., DBT_LEARNING_JSMITH)
+      database: DBT_LEARNING_YOUR_NAME
       warehouse: SALES_LOAD
       schema: RAW
       
