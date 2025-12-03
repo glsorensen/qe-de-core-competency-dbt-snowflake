@@ -63,12 +63,28 @@ dbt-project/
 1. **Python 3.11** installed (dbt doesn't support 3.13+ yet)
 2. **Slalom Snowflake access** (SSO via your @slalom.com email)
 
-### Step 1: Clone the Repository
+### Step 1: Clone the Repository and Create Your Branch
 
 ```bash
 git clone https://github.com/glsorensen/qe-de-core-competency-dbt-snowflake.git
 cd qe-de-core-competency-dbt-snowflake
 ```
+
+**Create your own branch** to work in (replace `YOUR_NAME` with your name/initials):
+
+```bash
+# Make sure you're on main
+git checkout main
+
+# Create and switch to your personal branch
+git checkout -b YOUR_NAME/dbt-learning
+
+# Examples:
+# git checkout -b jsmith/dbt-learning
+# git checkout -b gunnar/dbt-learning
+```
+
+> **Why a personal branch?** This lets you experiment freely, commit your changes, and keep your work separate from others.
 
 ### Step 2: Install dbt
 
