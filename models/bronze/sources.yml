@@ -12,7 +12,6 @@ version: 2
 sources:
   - name: raw
     description: Raw e-commerce data (Bronze Layer)
-    database: DBT_LEARNING
     schema: raw
 
     tables:
