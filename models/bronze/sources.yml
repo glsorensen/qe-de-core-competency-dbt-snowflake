@@ -12,7 +12,7 @@ version: 2
 sources:
   - name: raw
     description: Raw e-commerce data (Bronze Layer)
-    database: DBT_LEARNING
+    database: SALES_DATABASE_GLS
     schema: raw
 
     tables:
@@ -74,3 +74,21 @@ sources:
             tests:
               - unique
               - not_null
+
+      # Product categories
+      - name: categories
+        description: Product category hierarchy and department mapping
+        columns:
+          - name: category_id
+            description: Unique category identifier
+            tests:
+              - unique
+              - not_null
+          - name: category_name
+            description: Display name of the category
+            tests:
+              - not_null
+          - name: department
+            description: Department the category belongs to
+          - name: created_at
+            description: Date when the category was created
