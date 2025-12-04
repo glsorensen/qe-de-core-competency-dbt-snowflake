@@ -13,10 +13,11 @@ Before starting, make sure you have:
 
 ## 🗂️ Available Exercises
 
-| Exercise                                                             | Difficulty        | Time Estimate | Description                                                      |
-| -------------------------------------------------------------------- | ----------------- | ------------- | ---------------------------------------------------------------- |
-| [Exercise 1: Product Categories](./exercise_1_product_categories.md) | ⭐ Beginner       | 45-60 min     | Add category data and create a sales-by-category report          |
-| [Exercise 4: Customer Reviews](./exercise_4_customer_reviews.md)     | ⭐⭐ Intermediate | 60-90 min     | Build a complete review analytics pipeline with advanced testing |
+| Exercise                                                               | Difficulty        | Time Estimate | Description                                                         |
+| ---------------------------------------------------------------------- | ----------------- | ------------- | ------------------------------------------------------------------- |
+| [Exercise 1: Product Categories](./exercise_1_product_categories.md)   | ⭐ Beginner       | 45-60 min     | Add category data and create a sales-by-category report             |
+| [Exercise 4: Customer Reviews](./exercise_4_customer_reviews.md)       | ⭐⭐ Intermediate | 60-90 min     | Build a complete review analytics pipeline with advanced testing    |
+| [Exercise 5: Inventory Analytics](./exercise_5_inventory_analytics.md) | ⭐⭐⭐ Advanced   | 3-4 hours     | SCD Type 2, window functions, incremental models, anomaly detection |
 
 ## 🚀 Getting Started
 
