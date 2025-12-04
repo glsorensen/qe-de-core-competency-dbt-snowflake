@@ -286,7 +286,7 @@ models:
 
 ### "Profile not found"
 
-Make sure you copied the profile: `cp profiles.yml.example profiles.yml` and are running dbt commands from the `dbt-project` directory.
+Make sure you copied the profile: `cp profiles.yml.example profiles.yml` and are running dbt commands from the project root directory.
 
 ### "Database does not exist"
 
