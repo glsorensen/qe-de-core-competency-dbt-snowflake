@@ -20,5 +20,6 @@ venv/
 # Environment & Credentials (NEVER commit these!)
 .env
 profiles.yml
+.user.yml
 
 # Keep seeds/ tracked - they contain sample data for the tutorial

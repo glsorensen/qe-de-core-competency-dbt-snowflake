@@ -122,19 +122,6 @@ dbt debug
 
 You should see "All checks passed!" ✅
 
-#### Schema Setup
-
-You need to create the schemas in your database. Run this in Snowflake (replace `XX` with your initials):
-
-```sql
--- Replace XX with your initials (e.g., SALES_DATABASE_GLS)
-CREATE SCHEMA IF NOT EXISTS SALES_DATABASE_XX.RAW;
-CREATE SCHEMA IF NOT EXISTS SALES_DATABASE_XX.SILVER;
-CREATE SCHEMA IF NOT EXISTS SALES_DATABASE_XX.GOLD;
-```
-
-> **Note:** If you don't have a `SALES_DATABASE_<INITIALS>` database yet, you can use the shared `DBT_LEARNING` database instead.
-
 ### Step 5: Run the Tutorial!
 
 ```bash
