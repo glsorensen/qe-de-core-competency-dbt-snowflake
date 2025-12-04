@@ -1,0 +1,66 @@
+transaction_id,product_id,transaction_type,quantity,unit_cost,transaction_date,reference_id,notes
+1,1,restock,100,35.00,2023-06-01,PO-001,Initial stock
+2,2,restock,150,12.00,2023-06-01,PO-001,Initial stock
+3,3,restock,200,8.50,2023-06-01,PO-001,Initial stock
+4,4,restock,50,55.00,2023-06-01,PO-001,Initial stock
+5,5,restock,80,15.00,2023-06-01,PO-001,Initial stock
+6,6,restock,60,40.00,2023-06-01,PO-001,Initial stock
+7,7,restock,100,20.00,2023-06-01,PO-001,Initial stock
+8,8,restock,300,5.00,2023-06-01,PO-001,Initial stock
+9,9,restock,75,14.00,2023-06-01,PO-001,Initial stock
+10,10,restock,90,18.00,2023-06-01,PO-001,Initial stock
+11,1,sale,-1,35.00,2023-06-15,ORD-001,
+12,8,sale,-2,5.00,2023-06-15,ORD-001,
+13,3,sale,-1,8.50,2023-07-20,ORD-002,
+14,2,sale,-2,12.00,2023-07-20,ORD-002,
+15,4,sale,-1,55.00,2023-08-10,ORD-003,
+16,5,sale,-2,15.00,2023-08-10,ORD-003,
+17,1,sale,-3,35.00,2023-09-05,ORD-004,
+18,6,sale,-2,40.00,2023-09-05,ORD-004,
+19,7,sale,-1,20.00,2023-09-05,ORD-004,
+20,2,sale,-2,12.00,2023-10-12,ORD-005,
+21,1,damaged,-5,35.00,2023-10-15,,Found defective units in storage
+22,4,sale,-1,55.00,2023-11-01,ORD-006,
+23,1,sale,-5,35.00,2023-11-25,ORD-007,
+24,6,sale,-3,40.00,2023-11-25,ORD-007,
+25,9,sale,-2,14.00,2023-11-25,ORD-007,
+26,2,sale,-3,12.00,2023-12-10,ORD-008,
+27,10,sale,-1,18.00,2023-12-10,ORD-008,
+28,1,restock,75,35.00,2023-12-15,PO-002,Restocking popular item
+29,4,restock,40,55.00,2023-12-15,PO-002,Restocking running shoes
+30,4,sale,-2,55.00,2024-01-05,ORD-009,
+31,5,sale,-1,15.00,2024-01-05,ORD-009,
+32,7,sale,-2,20.00,2024-01-05,ORD-009,
+33,3,sale,-2,8.50,2024-01-20,ORD-010,
+34,8,sale,-2,5.00,2024-01-20,ORD-010,
+35,6,sale,-2,40.00,2024-02-14,ORD-011,
+36,9,sale,-3,14.00,2024-02-14,ORD-011,
+37,2,restock,100,12.00,2024-02-20,PO-003,Restocking clothing
+38,3,restock,150,8.50,2024-02-20,PO-003,Restocking water bottles
+39,1,sale,-1,35.00,2024-03-01,ORD-012,
+40,10,sale,-2,18.00,2024-03-01,ORD-012,
+41,4,sale,-3,55.00,2024-03-15,ORD-013,
+42,5,sale,-2,15.00,2024-03-15,ORD-013,
+43,7,sale,-2,20.00,2024-03-15,ORD-013,
+44,2,sale,-4,12.00,2024-04-02,ORD-014,
+45,3,sale,-3,8.50,2024-04-02,ORD-014,
+46,8,sale,-2,5.00,2024-04-20,ORD-015,
+47,6,adjustment,-2,40.00,2024-04-25,,Inventory count adjustment
+48,9,return,1,14.00,2024-05-01,ORD-011,Customer return
+49,1,restock,50,35.00,2024-05-10,PO-004,Restocking headphones
+50,5,restock,60,15.00,2024-05-10,PO-004,Restocking yoga mats
+51,10,restock,80,18.00,2024-05-15,PO-005,Restocking protein powder
+52,8,restock,200,5.00,2024-05-15,PO-005,Restocking phone cases
+53,4,damaged,-3,55.00,2024-05-20,,Damaged during handling
+54,7,sale,-5,20.00,2024-06-01,ORD-016,
+55,2,sale,-8,12.00,2024-06-15,ORD-017,
+56,1,sale,-10,35.00,2024-07-01,ORD-018,Large order
+57,3,sale,-15,8.50,2024-07-10,ORD-019,Bulk purchase
+58,6,restock,50,40.00,2024-07-15,PO-006,Restocking coffee makers
+59,9,restock,40,14.00,2024-07-15,PO-006,Restocking desk lamps
+60,10,sale,-5,18.00,2024-08-01,ORD-020,
+61,5,sale,-4,15.00,2024-08-10,ORD-021,
+62,8,sale,-25,5.00,2024-08-15,ORD-022,Large phone case order
+63,1,adjustment,50,35.00,2024-08-20,,Large inventory correction - found extra stock
+64,4,restock,30,55.00,2024-09-01,PO-007,
+65,7,restock,50,20.00,2024-09-01,PO-007,
