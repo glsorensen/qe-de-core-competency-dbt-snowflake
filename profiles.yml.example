@@ -2,24 +2,12 @@
 # dbt Profile Configuration for Snowflake
 # =============================================================================
 # SETUP INSTRUCTIONS:
-# 1. Create your own database in Snowflake (see Step 0 below)
-# 2. Copy this file to ~/.dbt/profiles.yml
-# 3. Update with your Snowflake credentials and database name
-# 4. Run `dbt debug` to test the connection
-# =============================================================================
+# 1. Copy this file to profiles.yml in the project root:
+#    cp profiles.yml.example profiles.yml
+# 2. Update with your Snowflake credentials (email + database)
+# 3. Run `dbt debug` to test the connection
 #
-# STEP 0: CREATE YOUR OWN DATABASE
-# ---------------------------------
-# Each student should create their own database to avoid conflicts.
-# Run this in a Snowflake worksheet (replace YOUR_NAME with your name/initials):
-#
-#   CREATE DATABASE DBT_LEARNING_YOUR_NAME;
-#
-# Examples:
-#   CREATE DATABASE DBT_LEARNING_JSMITH;
-#   CREATE DATABASE DBT_LEARNING_GUNNAR;
-#
-# Then update the 'database' field below with your database name.
+# NOTE: profiles.yml is gitignored so your credentials stay private.
 # =============================================================================
 
 dbt_learning_sandbox:
@@ -37,14 +25,32 @@ dbt_learning_sandbox:
       # Your password (use SSO or set up key-pair auth for better security)
       authenticator: externalbrowser  # This enables SSO login
       
-      # Role - using PUBLIC as shown in account details
+      # Role - PUBLIC owns most SALES_DATABASE_* databases
       role: PUBLIC
       
       # Database and warehouse
-      # ⚠️  IMPORTANT: Replace with YOUR database name (e.g., DBT_LEARNING_JSMITH)
-      database: DBT_LEARNING_YOUR_NAME
+      # Use your existing SALES_DATABASE_<INITIALS> database
+      database: SALES_DATABASE_XX  # Replace XX with your initials (e.g., SALES_DATABASE_GLS)
       warehouse: SALES_LOAD
       schema: RAW
       
       # Number of parallel threads for dbt to use
       threads: 4
+
+
+      '''Example: 
+      # dbt Profile for Slalom Snowflake
+dbt_learning_sandbox:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: SLALOM-SNOWFLAKE_ILABS_QECATALYST
+      user: GUNNAR.SORENSEN@SLALOM.COM
+      authenticator: externalbrowser
+      role: PUBLIC
+      database: SALES_DATABASE_GLS
+      warehouse: SALES_LOAD
+      schema: RAW
+      threads: 4
+      '''
