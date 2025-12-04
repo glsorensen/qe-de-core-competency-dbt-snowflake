@@ -63,28 +63,15 @@ dbt-project/
 1. **Python 3.11** installed (dbt doesn't support 3.13+ yet)
 2. **Slalom Snowflake access** (SSO via your @slalom.com email)
 
-### Step 1: Clone the Repository and Create Your Branch
+### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/glsorensen/qe-de-core-competency-dbt-snowflake.git
 cd qe-de-core-competency-dbt-snowflake
+
+# Create your own branch
+git checkout -b your-name/learning  # e.g., jane-doe/learning
 ```
-
-**Create your own branch** to work in (replace `YOUR_NAME` with your name/initials):
-
-```bash
-# Make sure you're on main
-git checkout main
-
-# Create and switch to your personal branch
-git checkout -b YOUR_NAME/dbt-learning
-
-# Examples:
-# git checkout -b jsmith/dbt-learning
-# git checkout -b gunnar/dbt-learning
-```
-
-> **Why a personal branch?** This lets you experiment freely, commit your changes, and keep your work separate from others.
 
 ### Step 2: Install dbt
 
@@ -100,37 +87,15 @@ source venv/bin/activate  # Mac/Linux
 pip install -r requirements.txt
 ```
 
-### Step 3: Create Your Own Database in Snowflake
-
-Each student should create their own database to avoid conflicts with other learners.
-
-1. **Log into Snowflake** using your Slalom SSO credentials
-2. **Open a SQL Worksheet** and run:
-
-```sql
--- Replace YOUR_NAME with your name or initials (e.g., JSMITH, GUNNAR)
-CREATE DATABASE DBT_LEARNING_YOUR_NAME;
-```
-
-**Examples:**
-
-```sql
-CREATE DATABASE DBT_LEARNING_JSMITH;
-CREATE DATABASE DBT_LEARNING_GUNNAR;
-```
-
-> **Note:** dbt will automatically create the required schemas (`RAW`, `SILVER`, `GOLD`) when you run your first commands.
-
-### Step 4: Configure Snowflake Connection
+### Step 3: Configure Snowflake Connection
 
 1. Copy the example profile:
 
 ```bash
-mkdir -p ~/.dbt
-cp profiles.yml.example ~/.dbt/profiles.yml
+cp profiles.yml.example profiles.yml
 ```
 
-2. Edit `~/.dbt/profiles.yml` with your Snowflake credentials:
+2. Edit `profiles.yml` with your credentials:
 
 ```yaml
 dbt_learning_sandbox:
@@ -142,13 +107,15 @@ dbt_learning_sandbox:
       user: YOUR_EMAIL@SLALOM.COM # Your Slalom email
       authenticator: externalbrowser # Enables SSO login
       role: PUBLIC
-      database: DBT_LEARNING_YOUR_NAME # ⚠️ Use YOUR database name!
+      database: SALES_DATABASE_XX # Replace XX with your initials (e.g., SALES_DATABASE_GLS)
       warehouse: SALES_LOAD
       schema: RAW
       threads: 4
 ```
 
-### Step 5: Verify Snowflake Access
+> **💡 Already have a database?** Most users have a `SALES_DATABASE_<INITIALS>` database (e.g., `SALES_DATABASE_GLS`, `SALES_DATABASE_MR`). Use yours!
+
+### Step 4: Verify Snowflake Access
 
 Verify your connection by running:
 
@@ -158,7 +125,7 @@ dbt debug
 
 You should see "All checks passed!" ✅
 
-### Step 6: Run the Tutorial!
+### Step 5: Run the Tutorial!
 
 ```bash
 # Install dbt packages
@@ -319,7 +286,7 @@ models:
 
 ### "Profile not found"
 
-Make sure `~/.dbt/profiles.yml` exists and the profile name matches `dbt_project.yml`.
+Make sure you copied the profile: `cp profiles.yml.example profiles.yml` and are running dbt commands from the project root directory.
 
 ### "Database does not exist"
 
@@ -328,6 +295,28 @@ Run the Snowflake setup SQL commands from Step 4.
 ### "Permission denied"
 
 Ensure your Snowflake role has proper grants on all schemas.
+
+### "Insufficient privileges to operate on database"
+
+Your database isn't owned by the `PUBLIC` role. You have two options:
+
+**Option 1: Grant ownership to PUBLIC** (recommended)
+
+```sql
+-- Run this using a role that owns your database (e.g., SNOWFLAKE-ILABS-QECATALYST)
+USE ROLE SNOWFLAKE-ILABS-QECATALYST;
+GRANT OWNERSHIP ON DATABASE SALES_DATABASE_XX TO ROLE PUBLIC;
+```
+
+**Option 2: Use the role that owns your database**
+
+Find the owner role:
+
+```sql
+SHOW GRANTS ON DATABASE SALES_DATABASE_XX;  -- Replace XX with your initials
+```
+
+Look for the `OWNERSHIP` privilege and use that role in your `profiles.yml`.
 
 ### "Source not found"
 

@@ -12,8 +12,11 @@ Get up and running in 5 minutes!
 ### 1. Clone & Setup
 
 ```bash
-git clone https://github.com/jakeklineIsReal/de-core-competency-for-qe.git
-cd de-core-competency-for-qe/dbt-project
+git clone https://github.com/glsorensen/qe-de-core-competency-dbt-snowflake.git
+cd qe-de-core-competency-dbt-snowflake
+
+# Create your own branch
+git checkout -b your-name/learning  # e.g., jane-doe/learning
 
 # Create virtual environment with Python 3.11
 python3.11 -m venv venv
@@ -29,11 +32,13 @@ pip install -r requirements.txt
 ### 2. Setup Profile
 
 ```bash
-mkdir -p ~/.dbt
-cp profiles.yml.example ~/.dbt/profiles.yml
+cp profiles.yml.example profiles.yml
 ```
 
-Edit `~/.dbt/profiles.yml` and replace `YOUR_EMAIL@SLALOM.COM` with your actual Slalom email.
+Edit `profiles.yml`:
+
+1. Replace `YOUR_EMAIL@SLALOM.COM` with your actual Slalom email
+2. Replace `SALES_DATABASE_XX` with your database (e.g., `SALES_DATABASE_GLS`)
 
 **Note:** This project uses SSO authentication (`authenticator: externalbrowser`). When you run dbt commands, a browser window will open for you to log in.
 
