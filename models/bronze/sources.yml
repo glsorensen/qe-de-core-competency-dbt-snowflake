@@ -73,3 +73,101 @@ sources:
             tests:
               - unique
               - not_null
+
+      # Supplier data
+      - name: suppliers
+        description: Supplier master data for inventory management
+        columns:
+          - name: supplier_id
+            description: Unique supplier identifier
+            tests:
+              - unique
+              - not_null
+          - name: supplier_name
+            description: Supplier company name
+          - name: contact_email
+            description: Primary contact email
+          - name: country
+            description: Supplier country location
+          - name: lead_time_days
+            description: Average delivery lead time in days
+          - name: reliability_score
+            description: Historical reliability score (0.0-1.0)
+          - name: payment_terms_days
+            description: Net payment terms in days
+          - name: is_preferred
+            description: Whether this is a preferred supplier
+          - name: contract_start_date
+            description: Contract start date
+          - name: contract_end_date
+            description: Contract end date (NULL if ongoing)
+
+      # Product-Supplier mapping
+      - name: product_suppliers
+        description: Links products to their suppliers with pricing
+        columns:
+          - name: product_supplier_id
+            description: Unique mapping identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            description: Foreign key to products
+          - name: supplier_id
+            description: Foreign key to suppliers
+          - name: unit_cost
+            description: Cost per unit from this supplier
+          - name: minimum_order_quantity
+            description: Minimum order quantity required
+          - name: is_primary_supplier
+            description: Whether this is the primary supplier for the product
+          - name: effective_date
+            description: When this supplier relationship became effective
+
+      # Inventory transactions
+      - name: inventory_transactions
+        description: Inventory movement transactions (sales, restocks, adjustments)
+        columns:
+          - name: transaction_id
+            description: Unique transaction identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            description: Foreign key to products
+          - name: transaction_type
+            description: Type of transaction (restock, sale, adjustment, return, damaged)
+          - name: quantity
+            description: Quantity moved (positive for inbound, negative for outbound)
+          - name: unit_cost
+            description: Cost at time of transaction
+          - name: transaction_date
+            description: When the transaction occurred
+          - name: reference_id
+            description: Reference ID (order ID, PO number, etc.)
+          - name: notes
+            description: Optional transaction notes
+
+      # Inventory snapshots
+      - name: inventory_snapshots
+        description: Daily/weekly inventory level snapshots
+        columns:
+          - name: snapshot_id
+            description: Unique snapshot identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            description: Foreign key to products
+          - name: snapshot_date
+            description: Date of the snapshot
+          - name: quantity_on_hand
+            description: Units physically available
+          - name: quantity_reserved
+            description: Units allocated to pending orders
+          - name: quantity_available
+            description: On hand minus reserved
+          - name: reorder_point
+            description: Threshold for reordering
+          - name: reorder_quantity
+            description: Standard reorder quantity

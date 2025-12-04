@@ -88,3 +88,145 @@ models:
         tests:
           - accepted_values:
               values: ['high_margin', 'medium_margin', 'low_margin']
+
+  # ===========================================================================
+  # INVENTORY & SUPPLY CHAIN MODELS
+  # ===========================================================================
+
+  - name: dim_suppliers
+    description: >
+      Supplier dimension with aggregated metrics and supplier tiering.
+      Contains comprehensive supplier information for inventory management.
+    columns:
+      - name: supplier_sk
+        description: Surrogate key for the supplier
+        tests: [unique, not_null]
+      - name: supplier_id
+        description: Natural key - unique supplier identifier
+        tests: [unique, not_null]
+      - name: supplier_name
+        tests: [not_null]
+      - name: supplier_tier
+        description: '{{ doc("supplier_tier") }}'
+        tests:
+          - accepted_values:
+              values: ['platinum', 'gold', 'silver']
+      - name: lead_time_category
+        tests:
+          - accepted_values:
+              values: ['fast', 'medium', 'slow']
+      - name: reliability_score
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+
+  - name: dim_inventory_history
+    description: >
+      Slowly Changing Dimension Type 2 for inventory history.
+      Tracks historical inventory states with validity periods for point-in-time analysis.
+    columns:
+      - name: inventory_sk
+        description: Surrogate key combining product_id and snapshot_date
+        tests: [unique, not_null]
+      - name: product_id
+        tests: [not_null]
+      - name: snapshot_date
+        tests: [not_null]
+      - name: valid_from
+        description: Start of validity period
+        tests: [not_null]
+      - name: valid_to
+        description: End of validity period (9999-12-31 for current)
+        tests: [not_null]
+      - name: is_current
+        description: Whether this is the current record for the product
+        tests: [not_null]
+      - name: inventory_health
+        description: '{{ doc("inventory_health_status") }}'
+        tests:
+          - accepted_values:
+              values: ['critical', 'low', 'healthy', 'overstocked']
+
+  - name: fct_inventory_movements
+    description: >
+      Incremental fact table tracking all inventory movements.
+      Includes running totals, transaction rankings, and supplier info for restocks.
+    columns:
+      - name: transaction_id
+        description: Unique transaction identifier
+        tests: [unique, not_null]
+      - name: product_id
+        tests: [not_null]
+      - name: transaction_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['restock', 'sale', 'adjustment', 'return', 'damaged']
+      - name: quantity
+        tests: [not_null]
+      - name: transaction_date
+        tests: [not_null]
+
+  - name: rpt_inventory_health
+    description: >
+      Comprehensive inventory health dashboard showing stockout risks,
+      days of supply, and reorder recommendations per product.
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+      - name: inventory_health
+        description: '{{ doc("inventory_health_status") }}'
+        tests:
+          - accepted_values:
+              values: ['critical', 'low', 'healthy', 'overstocked']
+      - name: stockout_risk_score
+        description: '{{ doc("stockout_risk_score") }}'
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+
+  - name: rpt_supplier_performance
+    description: >
+      Supplier performance report with rankings, metrics comparison,
+      and supply chain risk assessment.
+    columns:
+      - name: supplier_id
+        tests: [unique, not_null]
+      - name: supplier_tier
+        tests:
+          - accepted_values:
+              values: ['platinum', 'gold', 'silver']
+      - name: supply_chain_risk
+        description: Supply chain risk level based on stockout history
+        tests:
+          - accepted_values:
+              values: ['low', 'medium', 'high']
+
+  - name: rpt_inventory_anomalies
+    description: >
+      Identifies unusual inventory movements requiring investigation.
+      Includes anomaly detection rules and severity scoring.
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: anomaly_type
+        description: '{{ doc("anomaly_types") }}'
+        tests:
+          - accepted_values:
+              values:
+                [
+                  'Negative Inventory',
+                  'Large Transaction',
+                  'Cost Anomaly',
+                  'Unexplained Adjustment',
+                  'Weekend Activity',
+                  'Rapid Depletion',
+                ]
+      - name: severity_score
+        description: Severity rating from 1 (low) to 5 (critical)
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5

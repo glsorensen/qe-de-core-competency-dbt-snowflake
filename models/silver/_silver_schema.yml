@@ -88,3 +88,150 @@ models:
                   'influencer',
                   'other',
                 ]
+
+  - name: stg_suppliers
+    description: Cleaned and standardized supplier data with derived attributes
+    columns:
+      - name: supplier_id
+        description: Unique supplier identifier
+        tests: [unique, not_null]
+      - name: supplier_name
+        description: Cleaned supplier name
+        tests: [not_null]
+      - name: contact_email
+        description: Lowercase contact email
+        tests: [unique, not_null]
+      - name: country
+        description: Uppercase country code
+        tests: [not_null]
+      - name: lead_time_days
+        description: Average delivery lead time in days
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 90
+      - name: reliability_score
+        description: Supplier reliability score (0.0-1.0)
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+      - name: lead_time_category
+        description: Categorized lead time (fast/medium/slow)
+        tests:
+          - accepted_values:
+              values: ['fast', 'medium', 'slow']
+      - name: is_active_contract
+        description: Whether the supplier contract is currently active
+        tests: [not_null]
+
+  - name: stg_product_suppliers
+    description: Product-supplier mappings with margin calculations
+    columns:
+      - name: product_supplier_id
+        description: Unique mapping identifier
+        tests: [unique, not_null]
+      - name: product_id
+        description: Foreign key to products
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: supplier_id
+        description: Foreign key to suppliers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_suppliers')
+              field: supplier_id
+      - name: unit_cost
+        description: Cost per unit from this supplier
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: margin_percentage
+        description: Calculated margin percentage
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              where: 'margin_percentage IS NOT NULL'
+      - name: is_primary_supplier
+        description: Whether this is the primary supplier for the product
+        tests: [not_null]
+    tests:
+      - single_primary_supplier
+
+  - name: stg_inventory_transactions
+    description: Inventory movements with running totals
+    columns:
+      - name: transaction_id
+        description: Unique transaction identifier
+        tests: [unique, not_null]
+      - name: product_id
+        description: Foreign key to products
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: transaction_type
+        description: Type of inventory movement
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['restock', 'sale', 'adjustment', 'return', 'damaged']
+      - name: quantity
+        description: Quantity moved (signed)
+        tests: [not_null]
+      - name: unit_cost
+        description: Cost at time of transaction
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: transaction_date
+        description: When the transaction occurred
+        tests: [not_null]
+      - name: is_inbound
+        description: Whether this is an inbound transaction
+        tests: [not_null]
+
+  - name: stg_inventory_snapshots
+    description: Inventory level snapshots with health status and WoW changes
+    columns:
+      - name: snapshot_id
+        description: Unique snapshot identifier
+        tests: [unique, not_null]
+      - name: product_id
+        description: Foreign key to products
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: snapshot_date
+        description: Date of the snapshot
+        tests: [not_null]
+      - name: quantity_on_hand
+        description: Units physically available
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: quantity_available
+        description: On hand minus reserved
+        tests: [not_null]
+      - name: inventory_health
+        description: Inventory health classification
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['critical', 'low', 'healthy', 'overstocked']
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: 'quantity_available = quantity_on_hand - quantity_reserved'
