@@ -88,3 +88,44 @@ models:
         tests:
           - accepted_values:
               values: ['high_margin', 'medium_margin', 'low_margin']
+
+  - name: dim_categories
+    description: Category dimension with product statistics and department grouping
+    columns:
+      - name: category_id
+        description: Unique category identifier
+        tests: [unique, not_null]
+      - name: category_name
+        description: Display name of the category
+        tests: [not_null]
+      - name: department
+        description: Department the category belongs to
+        tests: [not_null]
+      - name: category_size
+        description: Size classification based on product count
+        tests:
+          - accepted_values:
+              values: ['empty', 'small', 'medium', 'large']
+
+  - name: rpt_sales_by_category
+    description: Sales metrics aggregated by product category and department
+    columns:
+      - name: category_id
+        description: Unique category identifier
+        tests: [unique, not_null]
+      - name: category_name
+        description: Display name of the category
+        tests: [not_null]
+      - name: department
+        description: Department the category belongs to
+        tests: [not_null]
+      - name: total_orders
+        description: Number of distinct orders containing products from this category
+      - name: total_units_sold
+        description: Total quantity of products sold in this category
+      - name: net_revenue
+        description: Total revenue after discounts
+      - name: total_profit
+        description: Estimated profit from this category
+      - name: revenue_rank
+        description: Rank by net revenue (1 = highest)
