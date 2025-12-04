@@ -13,15 +13,16 @@ Before starting, make sure you have:
 
 ## 🗂️ Available Exercises
 
-| Exercise                                                               | Difficulty        | Time Estimate | Description                                                         |
-| ---------------------------------------------------------------------- | ----------------- | ------------- | ------------------------------------------------------------------- |
-| [Exercise 1: Product Categories](./exercise_1_product_categories.md)   | ⭐ Beginner       | 45-60 min     | Add category data and create a sales-by-category report             |
-| [Exercise 4: Customer Reviews](./exercise_4_customer_reviews.md)       | ⭐⭐ Intermediate | 60-90 min     | Build a complete review analytics pipeline with advanced testing    |
-| [Exercise 5: Inventory Analytics](./exercise_5_inventory_analytics.md) | ⭐⭐⭐ Advanced   | 3-4 hours     | SCD Type 2, window functions, incremental models, anomaly detection |
+| Exercise                                                               | Difficulty        | Time Estimate | Description                                                          |
+| ---------------------------------------------------------------------- | ----------------- | ------------- | -------------------------------------------------------------------- |
+| [Exercise 0: Getting Started](./exercise_0_getting_started.md)         | ⭐ Intro          | 15-20 min     | Explore the project, run commands, understand the basics (no coding) |
+| [Exercise 1: Product Categories](./exercise_1_product_categories.md)   | ⭐ Beginner       | 45-60 min     | Add category data and create a sales-by-category report              |
+| [Exercise 4: Customer Reviews](./exercise_4_customer_reviews.md)       | ⭐⭐ Intermediate | 60-90 min     | Build a complete review analytics pipeline with advanced testing     |
+| [Exercise 5: Inventory Analytics](./exercise_5_inventory_analytics.md) | ⭐⭐⭐ Advanced   | 3-4 hours     | SCD Type 2, window functions, incremental models, anomaly detection  |
 
 ## 🚀 Getting Started
 
-1. **Pick an exercise** - Start with Exercise 1 if you're new to dbt
+1. **Pick an exercise** - Start with Exercise 0 if you're brand new to dbt
 2. **Read the scenario** - Understand the business problem you're solving
 3. **Work through each part** - Bronze → Silver → Gold, in order
 4. **Use hints sparingly** - Try to solve it yourself first!
