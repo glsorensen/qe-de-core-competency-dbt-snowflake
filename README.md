@@ -68,6 +68,9 @@ dbt-project/
 ```bash
 git clone https://github.com/glsorensen/qe-de-core-competency-dbt-snowflake.git
 cd qe-de-core-competency-dbt-snowflake
+
+# Create your own branch
+git checkout -b your-name/learning  # e.g., jane-doe/learning
 ```
 
 ### Step 2: Install dbt

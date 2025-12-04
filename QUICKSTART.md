@@ -15,6 +15,9 @@ Get up and running in 5 minutes!
 git clone https://github.com/glsorensen/qe-de-core-competency-dbt-snowflake.git
 cd qe-de-core-competency-dbt-snowflake
 
+# Create your own branch
+git checkout -b your-name/learning  # e.g., jane-doe/learning
+
 # Create virtual environment with Python 3.11
 python3.11 -m venv venv
 
