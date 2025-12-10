@@ -88,3 +88,58 @@ models:
         tests:
           - accepted_values:
               values: ['high_margin', 'medium_margin', 'low_margin']
+
+  - name: fct_reviews
+    description: Review fact table with enriched metrics for customer review analysis
+    columns:
+      - name: review_id
+        description: Unique review identifier
+        tests: [unique, not_null]
+      - name: product_id
+        description: Foreign key to products
+        tests: [not_null]
+      - name: customer_id
+        description: Foreign key to customers
+        tests: [not_null]
+      - name: rating
+        description: Customer rating (1-5)
+        tests: [not_null]
+      - name: review_age_days
+        description: Number of days since the review was posted
+      - name: rating_category
+        description: Categorized rating (Poor, Average, Good)
+        tests:
+          - accepted_values:
+              values: ['Poor', 'Average', 'Good']
+
+  - name: rpt_product_ratings
+    description: Aggregated product rating metrics for product performance analysis
+    columns:
+      - name: product_id
+        description: Unique product identifier
+        tests: [unique, not_null]
+      - name: total_reviews
+        description: Total number of reviews for this product
+        tests: [not_null]
+      - name: avg_rating
+        description: Average rating (1-5) rounded to 2 decimals
+      - name: positive_review_pct
+        description: Percentage of reviews with rating >= 4
+
+  - name: rpt_customer_review_activity
+    description: Customer review activity metrics and reviewer classification
+    columns:
+      - name: customer_id
+        description: Unique customer identifier
+        tests: [unique, not_null]
+      - name: total_reviews_written
+        description: Number of reviews written by this customer
+        tests: [not_null]
+      - name: avg_rating_given
+        description: Average rating this customer gives
+      - name: reviewer_type
+        description: Classification of reviewer behavior
+        tests:
+          - accepted_values:
+              values:
+                ['Harsh Critic', 'Balanced Reviewer', 'Enthusiastic Reviewer']
