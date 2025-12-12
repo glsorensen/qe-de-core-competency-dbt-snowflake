@@ -60,7 +60,9 @@ dbt-project/
 
 ### Prerequisites
 
-1. **Python 3.11** installed (dbt doesn't support 3.13+ yet)
+1. **Python 3.11 or 3.12** installed (dbt doesn't support 3.13+ yet)
+   - This repo includes a `.python-version` file that pins to Python 3.12
+   - If you use `pyenv`, it will automatically use the correct version
 2. **Slalom Snowflake access** (SSO via your @slalom.com email)
 
 ### Step 1: Clone the Repository
@@ -76,12 +78,13 @@ git checkout -b your-name/learning  # e.g., jane-doe/learning
 ### Step 2: Install dbt
 
 ```bash
-# Create virtual environment with Python 3.11
-python3.11 -m venv venv
+# If using pyenv, it will automatically use Python 3.12 from .python-version
+# Otherwise, ensure you're using Python 3.11 or 3.12
+python3.12 -m venv .venv
 
 # Activate it
-source venv/bin/activate  # Mac/Linux
-# venv\Scripts\activate   # Windows
+source .venv/bin/activate  # Mac/Linux
+# .venv\Scripts\activate   # Windows
 
 # Install dependencies
 pip install -r requirements.txt
