@@ -20,10 +20,11 @@ git checkout -b your-name/learning  # e.g., jane-doe/learning
 
 # Create virtual environment with Python 3.11
 python3.11 -m venv venv
+# python -m venv venv or this command
 
 # Activate it
 source venv/bin/activate  # Mac/Linux
-# venv\Scripts\activate   # Windows
+# venv/Scripts/activate   # Windows
 
 # Install dependencies
 pip install -r requirements.txt
@@ -34,11 +35,13 @@ pip install -r requirements.txt
 ```bash
 cp profiles.yml.example profiles.yml
 ```
+**Note**: Please check your profiles.yaml file and remove the Example section.
 
 Edit `profiles.yml`:
 
 1. Replace `YOUR_EMAIL@SLALOM.COM` with your actual Slalom email
 2. Replace `SALES_DATABASE_XX` with your database (e.g., `SALES_DATABASE_GLS`)
+3. Follow the SETUP INSTRUCTIONS from  `qe-de-core-competency-dbt-snowflake\profiles.yml` file and test your connection.
 
 **Note:** This project uses SSO authentication (`authenticator: externalbrowser`). When you run dbt commands, a browser window will open for you to log in.
 
