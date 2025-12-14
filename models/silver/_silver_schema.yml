@@ -88,3 +88,19 @@ models:
                   'influencer',
                   'other',
                 ]
+
+  - name: stg_categories
+    description: Cleaned and standardized product category data
+    columns:
+      - name: category_id
+        description: Unique category identifier
+        tests: [unique, not_null]
+      - name: category_name
+        description: Display name of the category
+        tests: [not_null]
+      - name: department
+        description: Department the category belongs to
+        tests: [not_null]
+      - name: category_key
+        description: Lowercase key for joining with products
+        tests: [unique, not_null]
