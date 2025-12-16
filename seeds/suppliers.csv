@@ -1,0 +1,9 @@
+supplier_id,supplier_name,contact_email,country,lead_time_days,reliability_score,payment_terms_days,is_preferred,contract_start_date,contract_end_date
+1,TechSource Global,orders@techsource.com,USA,5,0.95,30,true,2022-01-01,
+2,Pacific Components,sales@pacificcomp.cn,China,21,0.82,45,false,2022-06-15,
+3,EuroSupply GmbH,kontakt@eurosupply.de,Germany,10,0.91,30,true,2022-03-01,
+4,FastTrack Logistics,orders@fasttrack.com,USA,3,0.88,15,true,2023-01-01,
+5,Global Materials Inc,sales@globalmaterials.com,Mexico,14,0.75,60,false,2021-06-01,2024-06-01
+6,Quality First Ltd,info@qualityfirst.co.uk,UK,12,0.93,30,true,2022-09-15,
+7,AsiaSource Direct,contact@asiasource.sg,Singapore,18,0.79,45,false,2023-04-01,
+8,NorthStar Supply,orders@northstarsupply.ca,Canada,7,0.90,30,false,2023-07-01,
