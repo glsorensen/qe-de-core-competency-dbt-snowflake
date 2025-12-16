@@ -73,3 +73,31 @@ sources:
             tests:
               - unique
               - not_null
+
+      # Product reviews
+      - name: reviews
+        description: Customer product reviews and ratings
+        columns:
+          - name: review_id
+            description: Unique review identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            description: Foreign key to products table
+            tests:
+              - not_null
+          - name: customer_id
+            description: Foreign key to customers table
+            tests:
+              - not_null
+          - name: rating
+            description: Rating given by customer (1-5 stars)
+            tests:
+              - not_null
+          - name: review_title
+            description: Title/headline of the review
+          - name: review_text
+            description: Full review content written by customer
+          - name: review_date
+            description: Date when the review was submitted

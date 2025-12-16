@@ -1,0 +1,21 @@
+review_id,product_id,customer_id,rating,review_title,review_text,review_date
+1,1,1,5,Amazing sound quality!,These headphones exceeded my expectations. Crystal clear audio and comfortable fit.,2024-03-15
+2,1,3,4,Great for the price,Good sound quality and battery life. Minor discomfort after long use.,2024-04-20
+3,1,5,5,Best headphones ever,Bought these for my commute and they are fantastic. Highly recommend!,2024-05-10
+4,2,2,4,Soft and comfortable,Love the organic cotton feel. Fits perfectly and washes well.,2024-03-22
+5,2,6,3,Decent quality,Nice shirt but sizing runs a bit small. Material is good though.,2024-04-15
+6,3,4,5,Perfect water bottle,Keeps drinks cold all day. No leaks and looks great!,2024-02-28
+7,3,8,4,Good purchase,Sturdy bottle that fits in my bag. Happy with it.,2024-05-05
+8,4,1,2,Disappointed with durability,"Shoes fell apart after 3 months. Expected better quality for this price.",2024-06-01
+9,4,9,5,Perfect running shoes,So comfortable for long runs. Great arch support!,2024-04-25
+10,5,3,5,Essential for yoga,This mat has excellent grip and cushioning. Love the thickness.,2024-03-30
+11,5,6,4,Good yoga mat,Nice quality but wish it was a bit longer. Works well for home practice.,2024-05-18
+12,6,2,1,Stopped working quickly,"Coffee maker broke after 2 weeks. Very disappointed, returning it.",2024-04-10
+13,6,7,4,Makes great coffee,Easy to use and cleans up nicely. Coffee tastes excellent.,2024-05-22
+14,7,5,5,Beautiful wallet,Excellent leather quality and craftsmanship. Perfect gift!,2024-03-08
+15,8,10,3,Does the job,Basic phone case. Protects well but nothing special.,2024-04-30
+16,8,4,4,Great protection,Slim fit and good protection. Phone fits perfectly.,2024-05-15
+17,9,8,5,Love this lamp,Perfect lighting for my desk. Adjustable brightness is great.,2024-02-20
+18,9,1,4,Good desk lamp,Nice design and good light output. Easy to adjust.,2024-06-05
+19,10,9,2,Taste is off,Not a fan of the flavor. Texture is also gritty when mixed.,2024-05-01
+20,10,3,4,Works well for me,Good protein content and mixes fairly easily. Decent taste.,2024-06-10

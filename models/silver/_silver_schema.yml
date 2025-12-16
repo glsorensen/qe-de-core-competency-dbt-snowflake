@@ -88,3 +88,37 @@ models:
                   'influencer',
                   'other',
                 ]
+
+  - name: stg_reviews
+    description: Cleaned and standardized customer product reviews with calculated fields
+    columns:
+      - name: review_id
+        description: Unique review identifier
+        tests: [unique, not_null]
+      - name: product_id
+        description: Foreign key to products
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: customer_id
+        description: Foreign key to customers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: rating
+        description: Rating from 1 to 5 stars
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+      - name: review_date
+        description: Date when the review was submitted
+        tests: [not_null]
+      - name: is_positive_review
+        description: TRUE if rating >= 4
+      - name: review_length
+        description: Character count of review text
