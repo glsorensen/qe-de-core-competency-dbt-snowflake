@@ -15,6 +15,22 @@ models:
       - name: email
         tests: [unique, not_null]
 
+  - name: stg_categories
+    description: Cleaned and standardized product category data
+    columns:
+      - name: category_id
+        description: Unique category identifier
+        tests: [unique, not_null]
+      - name: category_name
+        description: Display name of the category
+        tests: [not_null]
+      - name: department
+        description: Parent department grouping
+        tests: [not_null]
+      - name: created_at
+        description: Date when category was created
+        tests: [not_null]
+
   - name: stg_products
     description: Cleaned product catalog with calculated margins
     columns:

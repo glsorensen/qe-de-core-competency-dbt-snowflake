@@ -25,6 +25,7 @@ WITH source_data AS (
         price,
         cost,
         sku,
+        category_id,
         created_at,
         updated_at,
         is_active
@@ -33,6 +34,7 @@ WITH source_data AS (
 
 SELECT
     product_id,
+    category_id,
 
     -- Name standardization
     TRIM(INITCAP(product_name)) AS product_name,

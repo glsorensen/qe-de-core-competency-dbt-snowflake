@@ -29,6 +29,8 @@ sources:
             tests:
               - unique
               - not_null
+          - name: loyalty_points
+            description: Customer loyalty rewards points balance
 
       # Order transactions
       - name: orders
@@ -63,6 +65,24 @@ sources:
             tests:
               - unique
               - not_null
+
+      # Product categories
+      - name: categories
+        description: Product category master data
+        columns:
+          - name: category_id
+            description: Unique category identifier
+            tests:
+              - unique
+              - not_null
+          - name: category_name
+            description: Display name of the category
+            tests:
+              - not_null
+          - name: department
+            description: Parent department grouping
+          - name: created_at
+            description: Timestamp when category was created
 
       # Marketing campaigns
       - name: marketing_campaigns
