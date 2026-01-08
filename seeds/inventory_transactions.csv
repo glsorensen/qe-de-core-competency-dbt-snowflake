@@ -1,0 +1,66 @@
+transaction_id,product_id,transaction_type,quantity,unit_cost,transaction_date,reference_id,notes
+1,1,restock,100,32.00,2024-06-01,PO-1001,Initial stock
+2,2,restock,200,10.00,2024-06-01,PO-1002,Initial stock
+3,3,restock,150,6.50,2024-06-01,PO-1003,Initial stock
+4,4,restock,80,38.00,2024-06-01,PO-1004,Initial stock
+5,5,restock,120,15.00,2024-06-01,PO-1005,Initial stock
+6,1,sale,-2,32.00,2024-06-15,ORD-1,
+7,2,sale,-1,10.00,2024-06-15,ORD-1,
+8,3,sale,-1,6.50,2024-06-16,ORD-2,
+9,1,sale,-1,32.00,2024-06-20,ORD-3,
+10,4,sale,-2,38.00,2024-06-22,ORD-4,
+11,5,sale,-1,15.00,2024-06-25,ORD-5,
+12,2,sale,-1,10.00,2024-06-28,ORD-6,
+13,1,damaged,-3,32.00,2024-07-01,,Found defective units
+14,6,restock,50,75.00,2024-07-02,PO-1006,New product launch
+15,1,sale,-2,32.00,2024-07-05,ORD-7,
+16,2,sale,-2,10.00,2024-07-08,ORD-8,
+17,3,sale,-1,6.50,2024-07-10,ORD-9,
+18,6,sale,-1,75.00,2024-07-12,ORD-10,
+19,4,sale,-1,38.00,2024-07-15,ORD-11,
+20,5,sale,-2,15.00,2024-07-18,ORD-12,
+21,1,restock,50,32.00,2024-07-20,PO-1007,Replenishment
+22,2,return,2,10.00,2024-07-22,ORD-8,Customer return
+23,7,restock,100,18.50,2024-07-25,PO-1008,New product launch
+24,1,sale,-3,32.00,2024-07-28,ORD-13,
+25,2,sale,-1,10.00,2024-07-30,ORD-14,
+26,3,adjustment,-5,6.50,2024-08-01,,Inventory count adjustment
+27,7,sale,-2,18.50,2024-08-03,ORD-15,
+28,6,sale,-1,75.00,2024-08-05,ORD-16,
+29,4,sale,-2,38.00,2024-08-08,ORD-17,
+30,5,sale,-1,15.00,2024-08-10,ORD-18,
+31,8,restock,250,8.00,2024-08-12,PO-1009,New product launch
+32,1,sale,-2,32.00,2024-08-15,ORD-19,
+33,2,sale,-3,10.00,2024-08-18,ORD-20,
+34,7,sale,-1,18.50,2024-08-20,ORD-21,
+35,8,sale,-5,8.00,2024-08-22,ORD-22,
+36,3,restock,100,6.50,2024-08-25,PO-1010,Replenishment
+37,1,sale,-4,32.00,2024-08-28,ORD-23,
+38,6,damaged,-2,75.00,2024-09-01,,Shipping damage
+39,9,restock,75,22.00,2024-09-03,PO-1011,New product launch
+40,2,sale,-2,10.00,2024-09-05,ORD-24,
+41,4,sale,-1,38.00,2024-09-08,ORD-25,
+42,8,sale,-10,8.00,2024-09-10,ORD-26,Bulk order
+43,9,sale,-2,22.00,2024-09-12,ORD-27,
+44,5,restock,100,15.00,2024-09-15,PO-1012,Replenishment
+45,7,sale,-3,18.50,2024-09-18,ORD-28,
+46,1,sale,-2,32.00,2024-09-20,ORD-29,
+47,10,restock,150,12.00,2024-09-22,PO-1013,New product launch
+48,3,sale,-2,6.50,2024-09-25,ORD-30,
+49,10,sale,-3,12.00,2024-09-28,ORD-31,
+50,2,sale,-1,10.00,2024-10-01,ORD-32,
+51,8,sale,-8,8.00,2024-10-03,ORD-33,
+52,9,sale,-1,22.00,2024-10-05,ORD-34,
+53,1,restock,75,32.00,2024-10-08,PO-1014,Replenishment
+54,4,sale,-2,38.00,2024-10-10,ORD-35,
+55,7,sale,-2,18.50,2024-10-12,ORD-36,
+56,10,sale,-4,12.00,2024-10-15,ORD-37,
+57,5,sale,-3,15.00,2024-10-18,ORD-38,
+58,6,sale,-1,75.00,2024-10-20,ORD-39,
+59,3,sale,-1,6.50,2024-10-22,ORD-40,
+60,2,adjustment,-10,10.00,2024-10-25,,Large inventory correction
+61,8,sale,-6,8.00,2024-10-28,ORD-41,
+62,9,sale,-2,22.00,2024-10-30,ORD-42,
+63,1,sale,-3,32.00,2024-11-01,ORD-43,
+64,10,sale,-2,12.00,2024-11-03,ORD-44,
+65,7,damaged,-4,18.50,2024-11-05,,Quality issue found

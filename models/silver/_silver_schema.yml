@@ -145,3 +145,230 @@ models:
         description: Boolean flag indicating if rating is 4 or 5
       - name: review_length
         description: Character count of the review text
+
+  - name: stg_suppliers
+    description: "Cleaned supplier data with contract status and lead time categorization"
+    columns:
+      - name: supplier_id
+        description: "Unique identifier for the supplier"
+        tests:
+          - unique
+          - not_null
+      - name: supplier_name
+        description: "Name of the supplier"
+        tests:
+          - not_null
+      - name: contact_email
+        description: "Supplier contact email (normalized to lowercase)"
+      - name: country
+        description: "Supplier country (normalized to uppercase)"
+      - name: lead_time_days
+        description: "Number of days for delivery lead time"
+        tests:
+          - not_null
+      - name: lead_time_category
+        description: "Categorized lead time: fast (≤7 days), medium (≤14 days), slow (>14 days)"
+        tests:
+          - accepted_values:
+              values: ['fast', 'medium', 'slow']
+      - name: reliability_score
+        description: "Supplier reliability score (0.0 to 1.0)"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0 AND reliability_score <= 1"
+      - name: payment_terms_days
+        description: "Payment terms in days"
+      - name: is_preferred
+        description: "Whether this is a preferred supplier"
+      - name: contract_start_date
+        description: "Contract start date"
+      - name: contract_end_date
+        description: "Contract end date (NULL for open-ended contracts)"
+      - name: is_active_contract
+        description: "Whether the contract is currently active"
+      - name: contract_days_remaining
+        description: "Number of days remaining on contract (NULL if open-ended)"
+      - name: days_as_supplier
+        description: "Total days since becoming a supplier"
+
+  - name: stg_product_suppliers
+    description: "Product-supplier relationships with margin analysis and data quality checks"
+    columns:
+      - name: product_supplier_id
+        description: "Unique identifier for the product-supplier relationship"
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        description: "Foreign key to products"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: supplier_id
+        description: "Foreign key to suppliers"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_suppliers')
+              field: supplier_id
+      - name: unit_cost
+        description: "Cost per unit from this supplier"
+        tests:
+          - not_null
+      - name: minimum_order_quantity
+        description: "Minimum order quantity required"
+      - name: is_primary_supplier
+        description: "Whether this is the primary supplier for this product"
+        tests:
+          - not_null
+      - name: effective_date
+        description: "Date this supplier relationship became effective"
+      - name: product_name
+        description: "Product name (enriched from products)"
+      - name: product_retail_price
+        description: "Product retail price for margin calculation"
+      - name: supplier_name
+        description: "Supplier name (enriched from suppliers)"
+      - name: supplier_country
+        description: "Supplier country (enriched from suppliers)"
+      - name: lead_time_days
+        description: "Supplier lead time (enriched from suppliers)"
+      - name: cost_variance_from_retail
+        description: "Difference between retail price and unit cost"
+      - name: margin_percentage
+        description: "Gross margin percentage"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= -100 AND margin_percentage <= 100"
+              config:
+                severity: warn
+      - name: cost_exceeds_price_flag
+        description: "Data quality flag for when cost exceeds retail price"
+    tests:
+      - single_primary_supplier:
+          column_name: product_id
+
+  - name: stg_inventory_transactions
+    description: "Inventory movement transactions with running totals and categorization"
+    columns:
+      - name: transaction_id
+        description: "Unique identifier for the transaction"
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        description: "Foreign key to products"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: transaction_type
+        description: "Type of transaction (restock, sale, adjustment, return, damaged)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['restock', 'sale', 'adjustment', 'return', 'damaged']
+      - name: quantity
+        description: "Quantity moved (positive for inbound, negative for outbound)"
+        tests:
+          - not_null
+      - name: unit_cost
+        description: "Cost per unit for this transaction"
+      - name: transaction_date
+        description: "Date of the transaction"
+        tests:
+          - not_null
+      - name: reference_id
+        description: "Reference to related order or document"
+      - name: notes
+        description: "Additional transaction notes"
+      - name: transaction_value
+        description: "Total transaction value (absolute quantity * unit cost)"
+      - name: is_inbound
+        description: "Flag for inbound transactions (restock, return)"
+      - name: is_outbound
+        description: "Flag for outbound transactions (sale, damaged)"
+      - name: extracted_order_id
+        description: "Extracted order ID from reference_id for sales transactions"
+      - name: running_inventory_balance
+        description: "Running total of inventory quantity by product"
+      - name: transaction_sequence
+        description: "Sequential transaction number per product"
+    tests:
+      - dbt_utils.recency:
+          datepart: day
+          field: transaction_date
+          interval: 30
+          config:
+            severity: warn
+
+  - name: stg_inventory_snapshots
+    description: "Weekly inventory snapshots with WoW analysis and health status"
+    columns:
+      - name: snapshot_id
+        description: "Unique identifier for the snapshot"
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        description: "Foreign key to products"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: snapshot_date
+        description: "Date of the inventory snapshot"
+        tests:
+          - not_null
+      - name: quantity_on_hand
+        description: "Total quantity on hand"
+        tests:
+          - not_null
+      - name: quantity_reserved
+        description: "Quantity reserved for orders"
+        tests:
+          - not_null
+      - name: quantity_available
+        description: "Available quantity (on_hand - reserved)"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              config:
+                severity: warn
+      - name: reorder_point
+        description: "Reorder point threshold"
+      - name: reorder_quantity
+        description: "Quantity to reorder when below reorder point"
+      - name: is_below_reorder_point
+        description: "Flag indicating inventory is below reorder point"
+      - name: is_stockout
+        description: "Flag indicating zero available inventory"
+      - name: inventory_health
+        description: "Health status: critical, low, healthy, overstocked"
+        tests:
+          - accepted_values:
+              values: ['critical', 'low', 'healthy', 'overstocked']
+      - name: previous_quantity_on_hand
+        description: "Quantity on hand from previous snapshot (LAG window function)"
+      - name: wow_quantity_change
+        description: "Week-over-week change in quantity"
+      - name: wow_change_percentage
+        description: "Week-over-week percentage change"
+      - name: days_since_last_snapshot
+        description: "Days between this snapshot and the previous one"
+      - name: snapshot_age_days
+        description: "Days since this snapshot was taken"
+      - name: is_current_snapshot
+        description: "Flag indicating this is the most recent snapshot for the product"
+    tests:
+      - dbt_utils.recency:
+          datepart: day
+          field: snapshot_date
+          interval: 14
+          config:
+            severity: warn

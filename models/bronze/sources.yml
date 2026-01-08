@@ -121,3 +121,134 @@ sources:
             description: Full text content of the review
           - name: review_date
             description: Date when the review was submitted
+
+      # Supplier master data
+      - name: suppliers
+        description: Supplier and vendor information
+        columns:
+          - name: supplier_id
+            description: Unique supplier identifier
+            tests:
+              - unique
+              - not_null
+          - name: supplier_name
+            description: Company name of the supplier
+            tests:
+              - not_null
+          - name: contact_email
+            description: Primary contact email for the supplier
+          - name: country
+            description: Country where supplier is located
+          - name: lead_time_days
+            description: Average delivery lead time in days
+            tests:
+              - not_null
+          - name: reliability_score
+            description: Historical reliability score (0.0 to 1.0)
+          - name: payment_terms_days
+            description: Net payment terms in days
+          - name: is_preferred
+            description: Flag indicating preferred supplier status
+          - name: contract_start_date
+            description: Date when supplier contract began
+          - name: contract_end_date
+            description: Contract expiration date (NULL if ongoing)
+
+      # Product-supplier mapping
+      - name: product_suppliers
+        description: Relationship between products and their suppliers with pricing
+        columns:
+          - name: product_supplier_id
+            description: Unique product-supplier relationship identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            description: Foreign key to products table
+            tests:
+              - not_null
+          - name: supplier_id
+            description: Foreign key to suppliers table
+            tests:
+              - not_null
+          - name: unit_cost
+            description: Cost per unit from this supplier
+            tests:
+              - not_null
+          - name: minimum_order_quantity
+            description: Minimum order quantity requirement
+          - name: is_primary_supplier
+            description: Flag indicating if this is the primary supplier for the product
+            tests:
+              - not_null
+          - name: effective_date
+            description: Date when this supplier relationship became effective
+
+      # Inventory transactions
+      - name: inventory_transactions
+        description: Detailed inventory movement transactions
+        columns:
+          - name: transaction_id
+            description: Unique transaction identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            description: Foreign key to products table
+            tests:
+              - not_null
+          - name: transaction_type
+            description: Type of transaction (restock, sale, adjustment, return, damaged)
+            tests:
+              - not_null
+          - name: quantity
+            description: Quantity moved (positive for additions, negative for reductions)
+            tests:
+              - not_null
+          - name: unit_cost
+            description: Cost per unit at time of transaction
+          - name: transaction_date
+            description: Date when the transaction occurred
+            tests:
+              - not_null
+          - name: reference_id
+            description: Reference to source document (order ID, PO number, etc.)
+          - name: notes
+            description: Optional notes about the transaction
+
+      # Inventory snapshots
+      - name: inventory_snapshots
+        description: Daily inventory level snapshots for historical tracking
+        freshness:
+          warn_after: {count: 7, period: day}
+          error_after: {count: 14, period: day}
+        columns:
+          - name: snapshot_id
+            description: Unique snapshot identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_id
+            description: Foreign key to products table
+            tests:
+              - not_null
+          - name: snapshot_date
+            description: Date of the inventory snapshot
+            tests:
+              - not_null
+          - name: quantity_on_hand
+            description: Total units physically available
+            tests:
+              - not_null
+          - name: quantity_reserved
+            description: Units allocated to pending orders
+            tests:
+              - not_null
+          - name: quantity_available
+            description: On hand minus reserved (available for sale)
+            tests:
+              - not_null
+          - name: reorder_point
+            description: Threshold quantity triggering reorder
+          - name: reorder_quantity
+            description: Quantity to order when below reorder point
