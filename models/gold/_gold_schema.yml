@@ -231,3 +231,97 @@ models:
                   'strong_performer',
                   'top_performer',
                 ]
+
+  - name: fct_reviews
+    description: Customer product reviews fact table with calculated metrics
+    columns:
+      - name: review_id
+        description: Primary key - unique review identifier
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        description: Foreign key to products
+        tests:
+          - not_null
+      - name: customer_id
+        description: Foreign key to customers
+        tests:
+          - not_null
+      - name: rating
+        description: Product rating from 1 (poor) to 5 (excellent)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+      - name: review_date
+        description: Date when the review was submitted
+        tests:
+          - not_null
+      - name: rating_category
+        description: Rating classification - Poor, Average, or Good
+        tests:
+          - accepted_values:
+              values: ['Poor', 'Average', 'Good']
+
+  - name: rpt_product_ratings
+    description: Product review ratings and satisfaction metrics report
+    columns:
+      - name: product_id
+        description: Unique product identifier
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Product name
+        tests:
+          - not_null
+      - name: total_reviews
+        description: Total number of reviews for this product
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: avg_rating
+        description: Average rating (1-5 scale)
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "between 1 and 5"
+      - name: positive_review_pct
+        description: Percentage of reviews with 4 or 5 star ratings
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "between 0 and 100"
+
+  - name: rpt_customer_review_activity
+    description: Customer review behavior and engagement metrics report
+    columns:
+      - name: customer_id
+        description: Unique customer identifier
+        tests:
+          - unique
+          - not_null
+      - name: email
+        description: Customer email address
+        tests:
+          - not_null
+      - name: total_reviews_written
+        description: Total number of reviews written by this customer
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+      - name: avg_rating_given
+        description: Average rating this customer gives
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "between 1 and 5"
+      - name: reviewer_type
+        description: Classification of reviewer behavior
+        tests:
+          - accepted_values:
+              values: ['Harsh Critic', 'Balanced Reviewer', 'Enthusiastic Reviewer']
+
