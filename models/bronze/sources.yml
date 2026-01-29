@@ -29,6 +29,8 @@ sources:
             tests:
               - unique
               - not_null
+          - name: loyalty_points
+            description: Loyalty points accumulated by the customer
 
       # Order transactions
       - name: orders
