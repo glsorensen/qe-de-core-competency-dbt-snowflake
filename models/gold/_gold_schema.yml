@@ -38,6 +38,35 @@ models:
           - accepted_values:
               values: ['never_ordered', 'active', 'at_risk', 'churned']
 
+  - name: dim_products
+    description: Product dimension with sales performance and profitability metrics
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+      - name: sku
+        tests: [unique, not_null]
+      - name: product_name
+        tests: [not_null]
+      - name: sales_performance
+        description: Sales volume categorization
+        tests:
+          - accepted_values:
+              values: ['no_sales', 'low_seller', 'medium_seller', 'high_seller']
+      - name: product_status
+        description: Product health based on activity
+        tests:
+          - accepted_values:
+              values: ['inactive', 'no_orders', 'stale', 'slow_moving', 'active']
+      - name: margin_category
+        description: Profitability categorization
+        tests:
+          - accepted_values:
+              values: ['low_margin', 'medium_margin', 'high_margin']
+      - name: price_category
+        tests:
+          - accepted_values:
+              values: ['budget', 'mid_range', 'premium']
+
   - name: fct_orders
     description: Orders fact table with denormalized customer info
     columns:
