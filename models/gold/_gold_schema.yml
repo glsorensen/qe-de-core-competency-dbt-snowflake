@@ -117,3 +117,19 @@ models:
         tests:
           - accepted_values:
               values: ['high_margin', 'medium_margin', 'low_margin']
+
+  - name: rpt_monthly_sales
+    description: Monthly sales performance report with revenue and order metrics
+    columns:
+      - name: order_year_month
+        tests: [unique, not_null]
+        description: Year-month identifier (YYYY-MM format)
+      - name: total_orders
+        tests: [not_null]
+        description: Total number of orders in the month
+      - name: total_revenue
+        tests: [not_null]
+        description: Total revenue for the month
+      - name: avg_order_value
+        tests: [not_null]
+        description: Average order value for the month
