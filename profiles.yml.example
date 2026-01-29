@@ -46,7 +46,7 @@ dbt_learning_sandbox:
     dev:
       type: snowflake
       account: SLALOM-SNOWFLAKE_ILABS_QECATALYST
-      user: GUNNAR.SORENSEN@SLALOM.COM
+      user: SIMRAT.SIDHU@SLALOM.COM
       authenticator: externalbrowser
       role: PUBLIC
       database: SALES_DATABASE_GLS
