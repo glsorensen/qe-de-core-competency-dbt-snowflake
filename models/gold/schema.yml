@@ -1,0 +1,614 @@
+version: 2
+
+models:
+  # ============================================================================
+  # DIMENSIONS
+  # ============================================================================
+  
+  - name: dim_date
+    description: |
+      Date dimension table for time-based analysis across all fact tables.
+      Provides calendar attributes and derived fields for reporting periods.
+      Covers 2024-01-01 through 2027-12-31 (4 years).
+    columns:
+      - name: date_day
+        description: Primary date key in YYYY-MM-DD format
+        tests:
+          - unique
+          - not_null
+      
+      - name: year
+        description: Four-digit year (e.g., 2024)
+        tests:
+          - not_null
+      
+      - name: month
+        description: Month number (1-12)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      
+      - name: month_name
+        description: Full month name (e.g., January, February)
+        tests:
+          - not_null
+      
+      - name: day
+        description: Day of month (1-31)
+        tests:
+          - not_null
+      
+      - name: day_name
+        description: Full day name (e.g., Monday, Tuesday)
+        tests:
+          - not_null
+      
+      - name: day_of_week
+        description: Day of week number (0=Sunday, 6=Saturday)
+        tests:
+          - not_null
+      
+      - name: week_of_year
+        description: Week number within the year (1-53)
+        tests:
+          - not_null
+      
+      - name: quarter
+        description: Quarter number (1-4)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4]
+      
+      - name: is_weekend
+        description: Boolean flag indicating if date falls on Saturday or Sunday
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+  - name: dim_content
+    description: |
+      Content catalog dimension containing all available media content.
+      Type 1 Slowly Changing Dimension - updates overwrite existing records.
+      Includes derived attributes for content categorization and analysis.
+    columns:
+      - name: content_id
+        description: Unique identifier for each piece of content (primary key)
+        tests:
+          - unique
+          - not_null
+      
+      - name: title
+        description: Content title (trimmed and standardized)
+        tests:
+          - not_null
+      
+      - name: genre
+        description: Content genre in title case (e.g., Action, Drama, Comedy)
+        tests:
+          - not_null
+      
+      - name: duration_minutes
+        description: Total runtime in minutes
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 500
+      
+      - name: release_year
+        description: Year content was released
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1900
+              max_value: 2030
+      
+      - name: rating
+        description: Content rating (e.g., PG, PG-13, R)
+        tests:
+          - not_null
+      
+      - name: content_type
+        description: Type of content (movie, series, documentary, short)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['movie', 'series', 'documentary', 'short']
+      
+      - name: duration_category
+        description: |
+          Derived field categorizing content by length:
+          - Short: < 30 minutes
+          - Medium: 30-90 minutes  
+          - Long: > 90 minutes
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Short', 'Medium', 'Long']
+      
+      - name: release_recency
+        description: |
+          Derived field categorizing content by release date:
+          - New Release: Released in past year
+          - Recent: Released 1-3 years ago
+          - Catalog: Released > 3 years ago
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['New Release', 'Recent', 'Catalog']
+      
+      - name: dbt_loaded_at
+        description: Timestamp when record was first loaded from source
+        tests:
+          - not_null
+      
+      - name: dbt_updated_at
+        description: Timestamp when record was last updated in this dimension
+        tests:
+          - not_null
+
+  - name: dim_user
+    description: |
+      User demographic dimension containing subscriber information.
+      Type 1 Slowly Changing Dimension - updates overwrite existing records.
+      Includes derived attributes for user segmentation and cohort analysis.
+    columns:
+      - name: user_id
+        description: Unique identifier for each user (primary key)
+        tests:
+          - unique
+          - not_null
+      
+      - name: country
+        description: User's country code (uppercase, e.g., US, GB, CA)
+        tests:
+          - not_null
+      
+      - name: signup_date
+        description: Date user created their account
+        tests:
+          - not_null
+      
+      - name: subscription_tier
+        description: Current subscription level (free, basic, premium)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['free', 'basic', 'premium']
+      
+      - name: days_since_signup
+        description: Number of days between signup_date and current date
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: user_tenure_segment
+        description: |
+          Derived field categorizing users by account age:
+          - New User: 0-30 days since signup
+          - Active User: 31-90 days since signup
+          - Established User: 91-365 days since signup
+          - Loyal User: > 365 days since signup
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['New User', 'Active User', 'Established User', 'Loyal User']
+      
+      - name: value_segment
+        description: |
+          Derived field categorizing users by subscription value:
+          - High Value: Premium subscribers
+          - Medium Value: Basic subscribers
+          - Free Tier: Free tier users
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['High Value', 'Medium Value', 'Free Tier']
+      
+      - name: dbt_loaded_at
+        description: Timestamp when record was first loaded from source
+        tests:
+          - not_null
+      
+      - name: dbt_updated_at
+        description: Timestamp when record was last updated in this dimension
+        tests:
+          - not_null
+
+  # ============================================================================
+  # FACT TABLES
+  # ============================================================================
+  
+  - name: fct_viewership
+    description: |
+      Viewership events fact table capturing individual viewing sessions.
+      Grain: One row per viewing event (user viewing content on a specific date/time).
+      Links to dim_user, dim_content, and dim_date for dimensional analysis.
+      Supports analysis of watch patterns, quality metrics, and engagement.
+    columns:
+      - name: event_id
+        description: Unique identifier for each viewership event (primary key)
+        tests:
+          - unique
+          - not_null
+      
+      - name: user_id
+        description: Foreign key to dim_user
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_user')
+              field: user_id
+      
+      - name: content_id
+        description: Foreign key to dim_content
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_content')
+              field: content_id
+      
+      - name: date_key
+        description: Foreign key to dim_date (date of viewing event)
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_day
+      
+      - name: event_timestamp
+        description: Full timestamp of when viewing event occurred
+        tests:
+          - not_null
+      
+      - name: watch_duration_seconds
+        description: Total seconds of content watched in this session
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: watch_duration_minutes
+        description: Total minutes of content watched (derived from seconds)
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: device_type
+        description: Device used for viewing (mobile, tablet, desktop, tv)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['mobile', 'tablet', 'desktop', 'tv']
+      
+      - name: quality
+        description: Video quality setting (SD, HD, 4K)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SD', 'HD', '4K']
+      
+      - name: buffer_count
+        description: Number of buffering events during this viewing session
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: smooth_playback_flag
+        description: Integer flag indicating if viewing had zero buffer events (1 = smooth, 0 = buffering)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      
+      - name: is_4k_viewing
+        description: Integer flag indicating if content was watched in 4K quality (1 = 4K, 0 = not 4K)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      
+      - name: dbt_loaded_at
+        description: Timestamp when record was loaded into warehouse
+        tests:
+          - not_null
+
+  - name: fct_revenue
+    description: |
+      Revenue transactions fact table capturing all monetary events.
+      Grain: One row per transaction (payment, refund, ad revenue).
+      Links to dim_user and dim_date for financial analysis and reporting.
+      Supports revenue attribution, churn analysis, and LTV calculations.
+    columns:
+      - name: transaction_id
+        description: Unique identifier for each transaction (primary key)
+        tests:
+          - unique
+          - not_null
+      
+      - name: user_id
+        description: Foreign key to dim_user
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_user')
+              field: user_id
+      
+      - name: date_key
+        description: Foreign key to dim_date (date of transaction)
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_day
+      
+      - name: transaction_timestamp
+        description: Full timestamp of when transaction occurred
+        tests:
+          - not_null
+      
+      - name: amount_usd
+        description: Transaction amount in US dollars (positive for revenue, negative for refunds)
+        tests:
+          - not_null
+      
+      - name: transaction_type
+        description: Type of transaction (subscription, rental, purchase, ad_revenue)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['subscription', 'rental', 'purchase', 'ad_revenue']
+      
+      - name: payment_method
+        description: Method used for payment (credit_card, paypal, gift_card)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['credit_card', 'paypal', 'gift_card', 'apple_pay', 'google_pay']
+      
+      - name: currency
+        description: Original currency code (uppercase, e.g., USD, EUR, GBP)
+        tests:
+          - not_null
+      
+      - name: is_recurring_revenue
+        description: Integer flag indicating if this is subscription-based recurring revenue (1 = recurring, 0 = not recurring)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      
+      - name: is_transactional_revenue
+        description: Integer flag indicating if this is one-time transactional revenue (1 = transactional, 0 = not transactional)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      
+      - name: is_ad_revenue
+        description: Integer flag indicating if this revenue came from advertising (1 = ad revenue, 0 = not ad revenue)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      
+      - name: dbt_loaded_at
+        description: Timestamp when record was loaded into warehouse
+        tests:
+          - not_null
+
+  # ============================================================================
+  # ANALYTICAL MARTS
+  # ============================================================================
+  
+  - name: rpt_daily_content_performance
+    description: |
+      Daily content performance reporting table for content analytics.
+      Grain: One row per content per date.
+      Aggregates viewership metrics to support content recommendation,
+      popularity tracking, and quality monitoring dashboards.
+    columns:
+      - name: content_id
+        description: Foreign key to dim_content (part of composite key)
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_content')
+              field: content_id
+      
+      - name: date_day
+        description: Date of aggregation (part of composite key)
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_day
+      
+      - name: title
+        description: Content title (denormalized for reporting convenience)
+        tests:
+          - not_null
+      
+      - name: genre
+        description: Content genre (denormalized for reporting convenience)
+        tests:
+          - not_null
+      
+      - name: total_views
+        description: Total number of viewing sessions for this content on this date
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: unique_viewers
+        description: Count of distinct users who viewed this content
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: total_watch_minutes
+        description: Total minutes watched across all viewing sessions
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: avg_watch_minutes_per_view
+        description: Average minutes watched per viewing session
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: views_4k
+        description: Number of sessions watched in 4K quality
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: smooth_playback_views
+        description: Number of sessions with zero buffering events
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: avg_buffer_count
+        description: Average number of buffer events per viewing session
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: completed_views
+        description: Number of sessions where completion_percentage >= 90%
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: avg_completion_rate
+        description: Average completion percentage across all sessions
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+      
+      - name: dbt_updated_at
+        description: Timestamp when this aggregation was last refreshed
+        tests:
+          - not_null
+
+  - name: rpt_user_engagement
+    description: |
+      User engagement summary table for subscriber analytics.
+      Grain: One row per user (lifetime summary).
+      Combines viewership and revenue metrics to support churn prediction,
+      segmentation, personalization, and customer lifetime value analysis.
+    columns:
+      - name: user_id
+        description: Unique identifier for user (primary key)
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('dim_user')
+              field: user_id
+      
+      - name: country
+        description: User's country (denormalized for reporting convenience)
+        tests:
+          - not_null
+      
+      - name: subscription_tier
+        description: Current subscription level (denormalized for reporting convenience)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['free', 'basic', 'premium']
+      
+      - name: user_tenure_segment
+        description: User tenure category (denormalized for reporting convenience)
+        tests:
+          - not_null
+      
+      - name: total_views
+        description: Lifetime total number of viewing sessions by this user
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: unique_content_watched
+        description: Count of distinct content items viewed by this user
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: active_days
+        description: Number of distinct dates user has watched content
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: total_watch_minutes
+        description: Lifetime total minutes of content watched
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: avg_watch_minutes_per_session
+        description: Average minutes watched per viewing session
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: preferred_device
+        description: Device type used most frequently by this user
+      
+      - name: lifetime_value
+        description: Total revenue generated by this user (sum of all transactions)
+        tests:
+          - not_null
+      
+      - name: recurring_revenue
+        description: Total recurring subscription revenue from this user
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: transactional_revenue
+        description: Total one-time transaction revenue from this user
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      
+      - name: engagement_level
+        description: |
+          Derived engagement category based on viewing activity:
+          - Highly Engaged: 10+ views and 5+ active days
+          - Engaged: 5-9 views and 3-4 active days
+          - Moderately Engaged: 2-4 views and 2 active days
+          - Low Engagement: 1 view or 1 active day
+          - Inactive: No viewing activity
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Highly Engaged', 'Engaged', 'Moderately Engaged', 'Low Engagement', 'Inactive']
+      
+      - name: dbt_updated_at
+        description: Timestamp when this user summary was last refreshed
+        tests:
+          - not_null

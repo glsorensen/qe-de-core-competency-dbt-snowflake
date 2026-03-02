@@ -1,25 +1,33 @@
 -- ============================================================================
--- EXERCISE 5: Inventory & Supply Chain Analytics - Verification Queries
+-- Exercise 5: Inventory & Supply Chain Analytics - Verification Queries
 -- ============================================================================
--- These queries validate the Exercise 5 implementation and demonstrate
--- advanced dbt patterns: SCD Type 2, incremental models, window functions,
--- custom macros, and statistical anomaly detection.
+-- Run these queries in Snowflake to verify your Exercise 5 implementation
+-- Make sure to use the correct database and schema (e.g., USE SCHEMA gold;)
+--
+-- This exercise demonstrates advanced dbt patterns:
+-- - SCD Type 2 (Slowly Changing Dimensions)
+-- - Incremental models with merge strategy
+-- - Window functions (LAG, LEAD, SUM, RANK, ROW_NUMBER)
+-- - Custom macros (calculate_days_of_supply)
+-- - Statistical anomaly detection (3-sigma rule)
+-- - Custom generic tests
 -- ============================================================================
 
 -- Query 1: Verify Supplier Performance Rankings
--- Shows supplier tier classification and performance metrics
+-- Shows supplier tier classification and performance metrics using RANK() window function
 SELECT
     supplier_name,
     supplier_tier,
     overall_performance_rank,
-    composite_performance_score,
+    ROUND(composite_performance_score, 2) AS performance_score,
     reliability_score,
     lead_time_days,
+    lead_time_category,
     total_products_supplied,
     key_strength,
     key_weakness,
     recommended_action
-FROM {{ ref('rpt_supplier_performance') }}
+FROM gold.rpt_supplier_performance
 ORDER BY overall_performance_rank
 LIMIT 5;
 
@@ -33,31 +41,32 @@ SELECT
     inventory_health,
     stockout_risk_score,
     reorder_recommendation,
-    value_at_risk_7_days
-FROM {{ ref('rpt_inventory_health') }}
+    ROUND(value_at_risk_7_days, 2) AS value_at_risk
+FROM gold.rpt_inventory_health
 WHERE stockout_risk_score > 50
 ORDER BY stockout_risk_score DESC
 LIMIT 10;
 
--- Query 3: Verify SCD Type 2 Implementation
--- Shows how inventory health status changes are tracked over time
+-- Query 3: Verify SCD Type 2 Implementation (Using LEAD Window Function)
+-- Shows how inventory health status changes are tracked over time with validity periods
 SELECT
     product_name,
     inventory_health,
-    valid_from,
-    valid_to,
+    TO_CHAR(valid_from, 'YYYY-MM-DD') AS valid_from,
+    TO_CHAR(valid_to, 'YYYY-MM-DD') AS valid_to,
     is_current,
     days_in_status,
     status_transition,
     quantity_available
-FROM {{ ref('dim_inventory_history') }}
+FROM gold.dim_inventory_history
 WHERE product_id = 1  -- Focus on one product for clarity
-ORDER BY valid_from DESC;
+ORDER BY valid_from DESC
+LIMIT 10;
 
 -- Query 4: Verify Incremental Model (Inventory Movements)
--- Shows transaction-level facts with running inventory balance
+-- Shows transaction-level facts with running inventory balance using SUM window function
 SELECT
-    transaction_date,
+    TO_CHAR(transaction_date, 'YYYY-MM-DD') AS transaction_date,
     product_name,
     transaction_type,
     quantity,
@@ -65,8 +74,8 @@ SELECT
     transaction_sequence,
     is_inbound,
     is_outbound,
-    transaction_value
-FROM {{ ref('fct_inventory_movements') }}
+    ROUND(transaction_value, 2) AS transaction_value
+FROM gold.fct_inventory_movements
 WHERE product_id = 1
 ORDER BY transaction_date DESC, transaction_sequence DESC
 LIMIT 15;
@@ -75,29 +84,30 @@ LIMIT 15;
 -- Shows LAG window function for time-series inventory analysis
 SELECT
     product_name,
-    snapshot_date,
+    TO_CHAR(snapshot_date, 'YYYY-MM-DD') AS snapshot_date,
     quantity_on_hand,
     previous_quantity_on_hand,
     wow_quantity_change,
-    wow_change_percentage,
+    ROUND(wow_change_percentage, 2) AS wow_change_pct,
     inventory_health
-FROM {{ ref('stg_inventory_snapshots') }}
+FROM silver.stg_inventory_snapshots
 WHERE product_id = 2
     AND snapshot_date >= '2024-10-01'
-ORDER BY snapshot_date DESC;
+ORDER BY snapshot_date DESC
+LIMIT 10;
 
 -- Query 6: Verify Anomaly Detection (3-Sigma Rule)
 -- Shows statistical outliers in inventory transactions
 SELECT
     anomaly_id,
     product_name,
-    anomaly_date,
+    TO_CHAR(anomaly_date, 'YYYY-MM-DD') AS anomaly_date,
     anomaly_type,
     severity,
-    zscore,
+    ROUND(zscore, 2) AS z_score,
     anomaly_description,
     recommended_action
-FROM {{ ref('rpt_inventory_anomalies') }}
+FROM gold.rpt_inventory_anomalies
 WHERE severity = 'High'
 ORDER BY anomaly_date DESC
 LIMIT 10;
@@ -108,27 +118,29 @@ SELECT
     product_name,
     supplier_name,
     is_primary_supplier,
-    unit_cost,
-    product_retail_price,
-    margin_percentage,
-    cost_variance_from_retail,
+    ROUND(unit_cost, 2) AS unit_cost,
+    ROUND(product_retail_price, 2) AS retail_price,
+    ROUND(margin_percentage, 2) AS margin_pct,
+    ROUND(cost_variance_from_retail, 2) AS cost_variance,
     cost_exceeds_price_flag,
     lead_time_days
-FROM {{ ref('stg_product_suppliers') }}
+FROM silver.stg_product_suppliers
 WHERE is_primary_supplier = TRUE
-ORDER BY margin_percentage DESC;
+ORDER BY margin_percentage DESC
+LIMIT 10;
 
--- Query 8: Verify Running Totals (Window Function)
--- Shows SUM window function for cumulative inventory balance
+-- Query 8: Verify Running Totals (SUM Window Function)
+-- Shows cumulative inventory balance calculation
 SELECT
-    transaction_date,
+    TO_CHAR(transaction_date, 'YYYY-MM-DD') AS transaction_date,
     transaction_type,
     quantity,
     running_inventory_balance,
     transaction_sequence
-FROM {{ ref('stg_inventory_transactions') }}
+FROM silver.stg_inventory_transactions
 WHERE product_id = 3
-ORDER BY transaction_date, transaction_sequence;
+ORDER BY transaction_date, transaction_sequence
+LIMIT 15;
 
 -- Query 9: Verify Supplier Dimension Enrichment
 -- Shows aggregated metrics from product_suppliers
@@ -140,10 +152,10 @@ SELECT
     reliability_score,
     total_products_supplied,
     primary_products_count,
-    avg_margin_percentage,
+    ROUND(avg_margin_percentage, 2) AS avg_margin_pct,
     is_active_contract,
     contract_days_remaining
-FROM {{ ref('dim_suppliers') }}
+FROM gold.dim_suppliers
 ORDER BY supplier_tier, reliability_score DESC;
 
 -- Query 10: Comprehensive Inventory Health Summary
@@ -156,7 +168,7 @@ SELECT
     ROUND(AVG(stockout_risk_score), 1) AS avg_risk_score,
     ROUND(SUM(inventory_value_at_retail), 2) AS total_inventory_value,
     ROUND(SUM(value_at_risk_7_days), 2) AS total_value_at_risk
-FROM {{ ref('rpt_inventory_health') }}
+FROM gold.rpt_inventory_health
 GROUP BY inventory_health
 ORDER BY
     CASE inventory_health
@@ -170,30 +182,31 @@ ORDER BY
 -- ADVANCED PATTERN VERIFICATION
 -- ============================================================================
 
--- Query 11: Verify SCD Type 2 Validity Periods (Using LEAD)
--- Shows how LEAD window function creates validity periods
+-- Query 11: Verify SCD Type 2 Validity Periods (Generated by LEAD Window Function)
+-- Shows how LEAD window function creates validity periods for historical tracking
 SELECT
     product_name,
     inventory_health AS current_status,
     previous_inventory_health,
-    valid_from,
-    valid_to,
+    TO_CHAR(valid_from, 'YYYY-MM-DD') AS valid_from,
+    TO_CHAR(valid_to, 'YYYY-MM-DD') AS valid_to,
     days_in_status,
-    CASE WHEN is_current THEN 'CURRENT' ELSE 'HISTORICAL' END AS record_type
-FROM {{ ref('dim_inventory_history') }}
+    CASE WHEN is_current THEN 'CURRENT' ELSE 'HISTORICAL' END AS record_type,
+    status_transition
+FROM gold.dim_inventory_history
 WHERE product_id IN (1, 2)
-ORDER BY product_id, valid_from DESC;
+ORDER BY product_id, valid_from DESC
+LIMIT 20;
 
 -- Query 12: Verify Incremental Strategy (Merge Behavior)
--- Shows that incremental model only processes new transactions
--- Run this query before and after adding new transactions to see the difference
+-- Shows that incremental model processes transactions efficiently
 SELECT
     DATE(transaction_date) AS transaction_day,
     COUNT(*) AS transaction_count,
     SUM(CASE WHEN is_inbound THEN 1 ELSE 0 END) AS inbound_count,
     SUM(CASE WHEN is_outbound THEN 1 ELSE 0 END) AS outbound_count,
-    SUM(transaction_value) AS total_value
-FROM {{ ref('fct_inventory_movements') }}
+    ROUND(SUM(transaction_value), 2) AS total_value
+FROM gold.fct_inventory_movements
 GROUP BY DATE(transaction_date)
 ORDER BY transaction_day DESC
 LIMIT 10;
@@ -203,7 +216,7 @@ LIMIT 10;
 SELECT
     product_id,
     COUNT(*) AS primary_supplier_count
-FROM {{ ref('stg_product_suppliers') }}
+FROM silver.stg_product_suppliers
 WHERE is_primary_supplier = TRUE
 GROUP BY product_id
 HAVING COUNT(*) != 1;
@@ -218,33 +231,33 @@ SELECT
     product_coverage_rank,
     margin_rank,
     overall_performance_rank,
-    composite_performance_score
-FROM {{ ref('rpt_supplier_performance') }}
+    ROUND(composite_performance_score, 2) AS performance_score
+FROM gold.rpt_supplier_performance
 ORDER BY overall_performance_rank;
 
 -- Query 15: End-to-End Data Lineage Verification
--- Shows how data flows from Bronze → Silver → Gold
+-- Shows how data flows from Bronze → Silver → Gold (Medallion Architecture)
 SELECT
-    'Bronze' AS layer,
-    'seeds' AS source,
+    'Bronze (seeds)' AS layer,
+    'suppliers' AS table_name,
     COUNT(*) AS row_count
-FROM {{ source('raw', 'suppliers') }}
+FROM raw.suppliers
 
 UNION ALL
 
 SELECT
-    'Silver' AS layer,
-    'stg_suppliers' AS source,
+    'Silver (staging)' AS layer,
+    'stg_suppliers' AS table_name,
     COUNT(*) AS row_count
-FROM {{ ref('stg_suppliers') }}
+FROM silver.stg_suppliers
 
 UNION ALL
 
 SELECT
-    'Gold' AS layer,
-    'dim_suppliers' AS source,
+    'Gold (dimension)' AS layer,
+    'dim_suppliers' AS table_name,
     COUNT(*) AS row_count
-FROM {{ ref('dim_suppliers') }};
+FROM gold.dim_suppliers;
 
 -- ============================================================================
 -- Expected Results Summary:

@@ -17,6 +17,10 @@ clean-targets:
   - 'target'
   - 'dbt_packages'
 
+# Flags for dbt behavior
+flags:
+  require_explicit_package_overrides_for_builtin_materializations: false
+
 # ============================================================================
 # MEDALLION ARCHITECTURE CONFIGURATION
 # ============================================================================
@@ -39,6 +43,10 @@ models:
     gold:
       +materialized: table # Tables for analytics = fast queries
       +schema: gold
+  
+  # Elementary: Data observability models
+  elementary:
+    +schema: logs # Store Elementary metadata in LOGS schema
 
 # Seed configurations (CSV files loaded to Snowflake)
 seeds:

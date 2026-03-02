@@ -1,0 +1,107 @@
+version: 2
+
+# ============================================================================
+# BRONZE LAYER - MEDIA ANALYTICS RAW DATA SOURCES
+# ============================================================================
+# Raw data loaded from S3 via Snowflake external stages
+# Reference these using: {{ source('media_raw', 'table_name') }}
+# ============================================================================
+
+sources:
+  - name: media_raw
+    description: Raw media analytics data loaded from S3 (Bronze Layer)
+    database: MEDIA_ANALYTICS
+    schema: RAW
+    
+    tables:
+      - name: raw_viewership
+        description: Raw viewership events from streaming platform
+        columns:
+          - name: event_id
+            description: Unique identifier for each viewing event
+            tests:
+              - unique
+              - not_null
+          - name: user_id
+            description: User who watched the content
+            tests:
+              - not_null
+          - name: content_id
+            description: Content that was viewed
+            tests:
+              - not_null
+          - name: event_timestamp
+            description: When the viewing event occurred
+            tests:
+              - not_null
+          - name: watch_duration_seconds
+            description: How long the user watched (in seconds)
+          - name: device_type
+            description: Device used (mobile, tv, web, tablet)
+          - name: quality
+            description: Video quality (SD, HD, 4K)
+          - name: buffer_count
+            description: Number of buffering events
+      
+      - name: raw_revenue
+        description: Raw revenue transactions
+        columns:
+          - name: transaction_id
+            description: Unique transaction identifier
+            tests:
+              - unique
+              - not_null
+          - name: user_id
+            description: User who made the transaction
+            tests:
+              - not_null
+          - name: transaction_timestamp
+            description: When the transaction occurred
+            tests:
+              - not_null
+          - name: transaction_type
+            description: Type (subscription, rental, purchase, ad_revenue)
+          - name: amount_usd
+            description: Transaction amount in USD
+          - name: payment_method
+            description: Payment method used
+          - name: currency
+            description: Currency code
+      
+      - name: raw_content
+        description: Content catalog metadata
+        columns:
+          - name: content_id
+            description: Unique content identifier
+            tests:
+              - unique
+              - not_null
+          - name: title
+            description: Content title
+          - name: genre
+            description: Content genre
+          - name: duration_minutes
+            description: Content duration in minutes
+          - name: release_year
+            description: Year of release
+          - name: rating
+            description: Content rating (G, PG, PG-13, R, NR)
+          - name: content_type
+            description: Type (movie, series, documentary, short)
+      
+      - name: raw_users
+        description: User demographic information
+        columns:
+          - name: user_id
+            description: Unique user identifier
+            tests:
+              - unique
+              - not_null
+          - name: signup_date
+            description: Date user signed up
+          - name: country
+            description: User country
+          - name: subscription_tier
+            description: Subscription level (free, basic, premium)
+          - name: age_group
+            description: User age group

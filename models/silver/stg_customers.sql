@@ -26,7 +26,8 @@ WITH source_data AS (
         created_at,
         updated_at,
         customer_lifetime_value,
-        acquisition_channel
+        acquisition_channel,
+        loyalty_points
     FROM {{ source('raw', 'customers') }}
 )
 
@@ -48,6 +49,7 @@ SELECT
     
     -- Financial fields
     COALESCE(customer_lifetime_value, 0) AS customer_lifetime_value,
+    COALESCE(loyalty_points, 0) AS loyalty_points,
     
     -- Categorization
     LOWER(acquisition_channel) AS acquisition_channel,
