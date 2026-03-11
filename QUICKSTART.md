@@ -52,6 +52,12 @@ dbt deps      # Install packages
 dbt build     # Load data, run models, run tests
 ```
 
+If you are loading Bronze/raw data from the Snowflake external stage instead of seeds, run this before `dbt build`:
+
+```bash
+dbt run-operation load_raw_from_external_stage --args '{"stage_name":"CAPSTONE_FLOWERSHOP_DN_SKS.SALES.STAGES.SALES_STAGE","file_format_name":"CAPSTONE_FLOWERSHOP_DN_SKS.SALES.FILE_FORMATS.SALES_CSV_FORMAT"}'
+```
+
 You should see: `Done. PASS=71 WARN=0 ERROR=0` ✅
 
 ### 4. Explore

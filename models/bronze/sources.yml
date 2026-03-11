@@ -6,7 +6,8 @@ version: 2
 # This file defines where your raw data lives in Snowflake.
 # In dbt, you reference these using: {{ source('raw', 'table_name') }}
 #
-# The seed CSV files (in /seeds folder) are loaded here via `dbt seed`
+# Raw tables can be loaded with `dbt seed` or from an external Snowflake stage.
+# This file defines the source contract either way.
 # ============================================================================
 
 sources:
