@@ -26,6 +26,9 @@ clean-targets:
 
 models:
   snowcommerce_analytics:
+    +persist_docs:
+      relation: true
+      columns: true
     # Bronze: Raw data sources (defined in sources.yml, no models here)
     bronze:
       +schema: raw
