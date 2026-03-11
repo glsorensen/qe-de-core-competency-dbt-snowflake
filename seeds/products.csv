@@ -1,11 +1,16 @@
-product_id,product_name,product_category,product_subcategory,brand,price,cost,sku,is_active,created_at,updated_at
-1,Wireless Bluetooth Headphones,Electronics,Audio,SoundMax,79.99,35.00,ELEC-AUD-001,true,2023-01-01 00:00:00,2024-01-15 10:00:00
-2,Organic Cotton T-Shirt,Clothing,Tops,EcoWear,29.99,12.00,CLTH-TOP-001,true,2023-01-01 00:00:00,2024-02-20 11:30:00
-3,Stainless Steel Water Bottle,Home,Kitchen,HydroLife,24.99,8.50,HOME-KIT-001,true,2023-01-01 00:00:00,2024-03-10 09:15:00
-4,Running Shoes,Sports,Footwear,SprintPro,129.99,55.00,SPRT-FTW-001,true,2023-01-01 00:00:00,2024-01-25 14:45:00
-5,Yoga Mat,Sports,Fitness,FlexFit,39.99,15.00,SPRT-FIT-001,true,2023-01-01 00:00:00,2024-04-05 16:00:00
-6,Coffee Maker,Home,Appliances,BrewMaster,89.99,40.00,HOME-APP-001,true,2023-01-01 00:00:00,2024-02-15 08:30:00
-7,Leather Wallet,Accessories,Bags,LuxCraft,49.99,20.00,ACCS-BAG-001,true,2023-01-01 00:00:00,2024-05-01 13:00:00
-8,Smartphone Case,Electronics,Accessories,TechShield,19.99,5.00,ELEC-ACC-001,true,2023-01-01 00:00:00,2024-03-20 10:30:00
-9,Desk Lamp,Home,Lighting,BrightSpace,34.99,14.00,HOME-LGT-001,true,2023-01-01 00:00:00,2024-04-18 15:15:00
-10,Protein Powder,Health,Supplements,FitFuel,44.99,18.00,HLTH-SUP-001,true,2023-01-01 00:00:00,2024-05-10 11:45:00
+product_id,product_name,category,price,stock_quantity,description
+1,Dozen Red Roses,Roses,49.99,150,Classic bouquet of 12 long-stem red roses
+2,Mixed Tulip Bouquet,Tulips,34.99,100,Colorful arrangement of 15 mixed tulips
+3,Sunflower Delight,Sunflowers,39.99,80,Bright bouquet of 10 sunflowers with greenery
+4,Lavender Dreams,Specialty,44.99,60,Elegant lavender arrangement with eucalyptus
+5,Pink Peony Bunch,Peonies,54.99,45,Luxurious bouquet of 8 pink peonies
+6,Spring Mix Arrangement,Mixed,42.99,120,Seasonal spring flowers in decorative vase
+7,White Lily Elegance,Lilies,47.99,70,Pure white Oriental lilies with ribbon
+8,Wildflower Medley,Mixed,29.99,90,Rustic mix of wildflowers and daisies
+9,Orchid Plant,Plants,64.99,35,Phalaenopsis orchid in ceramic pot
+10,Rose & Hydrangea Combo,Premium,69.99,50,Luxury arrangement with roses and hydrangeas
+11,Carnation Collection,Carnations,24.99,110,Budget-friendly mix of colorful carnations
+12,Gerbera Daisy Burst,Daisies,36.99,85,Vibrant assortment of gerbera daisies
+13,Succulent Garden,Plants,32.99,65,Variety of succulents in wooden box
+14,Baby's Breath Bouquet,Specialty,19.99,95,Delicate white baby's breath arrangement
+15,Wedding White Collection,Premium,89.99,30,Premium white roses and calla lilies
