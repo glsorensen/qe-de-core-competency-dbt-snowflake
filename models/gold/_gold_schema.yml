@@ -11,20 +11,23 @@ models:
     description: Customer dimension with aggregated metrics and segmentation
     columns:
       - name: customer_id
-        tests: [unique, not_null]
+        tests: [unique, not_null, dbt_expectations.expect_column_to_exist]
       - name: first_name
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
       - name: last_name
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
       - name: email
-        tests: [unique, not_null]
+        tests: [unique, not_null, dbt_expectations.expect_column_to_exist]
       - name: phone
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: address
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: city
       - name: state
       - name: zip_code
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: created_at
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
       - name: customer_segment
         description: Based on purchase frequency
         tests:
@@ -37,17 +40,20 @@ models:
                   'regular',
                   'champion',
                 ]
+          - dbt_expectations.expect_column_to_exist
       - name: value_tier
         description: Based on lifetime revenue
         tests:
           - accepted_values:
               values:
                 ['no_value', 'low_value', 'medium_value', 'high_value', 'vip']
+          - dbt_expectations.expect_column_to_exist
       - name: activity_status
         description: Based on recency of orders
         tests:
           - accepted_values:
               values: ['never_ordered', 'active', 'at_risk', 'churned']
+          - dbt_expectations.expect_column_to_exist
 
   - name: dim_products
     description: Product dimension with categorization
@@ -63,6 +69,7 @@ models:
       - name: stock_quantity
         tests: [not_null]
       - name: description
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: price_category
         tests:
           - accepted_values:
@@ -71,6 +78,7 @@ models:
         tests:
           - accepted_values:
               values: ['no_sales', 'low_seller', 'medium_seller', 'high_seller']
+          - dbt_expectations.expect_column_to_exist
       - name: product_status
         tests:
           - accepted_values:
@@ -79,12 +87,13 @@ models:
         tests:
           - accepted_values:
               values: ['low_margin', 'medium_margin', 'high_margin']
+          - dbt_expectations.expect_column_to_exist
 
   - name: dim_orders
     description: Orders dimension with denormalized customer and product information
     columns:
       - name: order_id
-        tests: [unique, not_null]
+        tests: [unique, not_null, dbt_expectations.expect_column_to_exist]
       - name: customer_id
         tests:
           - not_null
@@ -92,6 +101,7 @@ models:
               arguments:
                 to: ref('dim_customers')
                 field: customer_id
+          - dbt_expectations.expect_column_to_exist
       - name: product_id
         tests:
           - not_null
@@ -99,87 +109,102 @@ models:
               arguments:
                 to: ref('dim_products')
                 field: product_id
+          - dbt_expectations.expect_column_to_exist
       - name: quantity
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
       - name: order_date
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
       - name: total_amount
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
       - name: order_status
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
       - name: first_name
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: last_name
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: email
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: city
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: state
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: product_name
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: category
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: product_price
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: order_status_category
         tests:
           - accepted_values:
               values: ['completed', 'pending', 'processing', 'other']
+          - dbt_expectations.expect_column_to_exist
       - name: order_year
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: order_month
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: order_quarter
+        tests: [dbt_expectations.expect_column_to_exist]
       - name: order_week
+        tests: [dbt_expectations.expect_column_to_exist]
     
   - name: rpt_monthly_sales
     description: Monthly sales performance report with revenue and order metrics
     columns:
       - name: order_year_month
-        tests: [unique, not_null]
+        tests: [unique, not_null, dbt_expectations.expect_column_to_exist]
         description: Year-month identifier (YYYY-MM format)
       - name: order_year
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Year extracted from order date
       - name: order_month
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Month number extracted from order date
       - name: total_orders
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Total number of orders in the month
       - name: completed_orders
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Number of completed orders in the month
       - name: total_revenue
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Total revenue for the month
       - name: avg_order_value
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Average order value for the month
 
   - name: rpt_product_performance
     description: Product sales and profit analysis report
     columns:
       - name: product_id
-        tests: [unique, not_null]
+        tests: [unique, not_null, dbt_expectations.expect_column_to_exist]
         description: Unique product identifier
       - name: product_name
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Name of the product
       - name: category
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Product category
       - name: price
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Current product price
       - name: price_category
         tests:
           - accepted_values:
               values: ['budget', 'mid_range', 'premium']
+          - dbt_expectations.expect_column_to_exist
         description: Price tier categorization
       - name: orders_containing_product
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Number of completed orders containing this product
       - name: total_units_sold
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Total quantity units sold
       - name: total_revenue
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Total revenue generated by this product
       - name: avg_order_value
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Average value when product is ordered
       - name: performance_tier
         tests:
@@ -191,17 +216,20 @@ models:
                   'moderate_performer',
                   'low_performer',
                 ]
+          - dbt_expectations.expect_column_to_exist
         description: Performance classification based on revenue
       - name: margin_category
         tests:
           - accepted_values:
               values: ['high_margin', 'medium_margin', 'low_margin']
+          - dbt_expectations.expect_column_to_exist
         description: Profitability categorization
       - name: product_status
         tests:
           - accepted_values:
               values: ['inactive', 'no_orders', 'stale', 'slow_moving', 'active']
+          - dbt_expectations.expect_column_to_exist
         description: Product health status
       - name: stock_quantity
-        tests: [not_null]
+        tests: [not_null, dbt_expectations.expect_column_to_exist]
         description: Current stock quantity available

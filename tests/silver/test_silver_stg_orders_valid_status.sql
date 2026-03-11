@@ -3,6 +3,6 @@
 
 SELECT
     order_id,
-    status
+    ORDER_STATUS
 FROM {{ ref('stg_orders') }}
-WHERE status NOT IN ('completed', 'pending', 'processing')
+WHERE ORDER_STATUS NOT IN ('completed', 'pending', 'processing')

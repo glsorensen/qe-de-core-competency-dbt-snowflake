@@ -25,33 +25,48 @@ sources:
             tests:
               - unique
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: first_name
             description: Customer first name
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: last_name
             description: Customer last name
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: email
             description: Customer email address
             tests:
               - unique
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: phone
             description: Customer phone number
+            tests:
+              - dbt_expectations.expect_column_to_exist
           - name: address
             description: Customer street address
+            tests:
+              - dbt_expectations.expect_column_to_exist
           - name: city
             description: Customer city
+            tests:
+              - dbt_expectations.expect_column_to_exist
           - name: state
             description: Customer state
+            tests:
+              - dbt_expectations.expect_column_to_exist
           - name: zip_code
             description: Customer zip code
+            tests:
+              - dbt_expectations.expect_column_to_exist
           - name: created_at
             description: Account creation date
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
 
       # Order transactions
       - name: orders
@@ -62,32 +77,39 @@ sources:
             tests:
               - unique
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: customer_id
             description: Foreign key to customers
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: product_id
             description: Foreign key to products
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: quantity
             description: Quantity ordered
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: order_date
             description: Date order was placed
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: total_amount
             description: Total order amount
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: status
             description: Order status
             tests:
               - not_null
               - accepted_values:
                   values: ['completed', 'pending', 'processing']
+              - dbt_expectations.expect_column_to_exist
 
       # Product catalog
       - name: products
@@ -98,22 +120,29 @@ sources:
             tests:
               - unique
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: product_name
             description: Product name
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: category
             description: Product category
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: price
             description: Product price
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: stock_quantity
             description: Current stock quantity
             tests:
               - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: description
             description: Product description
+            tests:
+              - dbt_expectations.expect_column_to_exist
 
