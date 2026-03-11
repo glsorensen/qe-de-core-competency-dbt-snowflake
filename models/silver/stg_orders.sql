@@ -19,15 +19,11 @@ WITH source_data AS (
     SELECT
         order_id,
         customer_id,
+        product_id,
+        quantity,
         order_date,
-        order_status,
         total_amount,
-        shipping_cost,
-        tax_amount,
-        discount_amount,
-        payment_method,
-        shipping_address,
-        created_at
+        status
     FROM {{ source('raw', 'orders') }}
 ),
 
@@ -38,55 +34,27 @@ cleaned AS (
 
         -- Foreign keys
         customer_id,
+        product_id,
 
         -- Order details
         order_date::DATE AS order_date,
-        LOWER(TRIM(order_status)) AS order_status,
+        LOWER(TRIM(status)) AS status,
+        
+        -- Quantity
+        quantity,
 
-        -- Financial fields - ensure proper decimal handling
+        -- Financial fields
         ROUND(COALESCE(total_amount, 0), 2) AS total_amount,
-        ROUND(COALESCE(shipping_cost, 0), 2) AS shipping_cost,
-        ROUND(COALESCE(tax_amount, 0), 2) AS tax_amount,
-        ROUND(COALESCE(discount_amount, 0), 2) AS discount_amount,
-
-        -- Calculate subtotal (total - shipping - tax + discount)
-        ROUND(
-            COALESCE(total_amount, 0)
-            - COALESCE(shipping_cost, 0)
-            - COALESCE(tax_amount, 0)
-            + COALESCE(discount_amount, 0),
-            2
-        ) AS subtotal_amount,
-
-        -- Payment information
-        LOWER(TRIM(payment_method)) AS payment_method,
-        TRIM(shipping_address) AS shipping_address,
 
         -- Timestamps
-        created_at,
+        CURRENT_TIMESTAMP() AS created_at,
 
-        -- Derived fields
-        DATE_PART('year', order_date) AS order_year,
-        DATE_PART('month', order_date) AS order_month,
-        DATE_PART('quarter', order_date) AS order_quarter,
+        -- Derived date fields
+        YEAR(order_date) AS order_year,
+        MONTH(order_date) AS order_month,
+        QUARTER(order_date) AS order_quarter,
         TO_CHAR(order_date, 'YYYY-MM') AS order_year_month,
         DAYNAME(order_date) AS order_day_of_week,
-
-        -- Business logic flags
-        CASE
-            WHEN order_status IN ('delivered', 'completed') THEN TRUE
-            ELSE FALSE
-        END AS is_completed,
-
-        CASE
-            WHEN order_status = 'cancelled' THEN TRUE
-            ELSE FALSE
-        END AS is_cancelled,
-
-        CASE
-            WHEN discount_amount > 0 THEN TRUE
-            ELSE FALSE
-        END AS has_discount,
 
         -- Metadata
         CURRENT_TIMESTAMP() AS dbt_updated_at
@@ -98,6 +66,12 @@ SELECT *
 FROM cleaned
 WHERE
     -- Data quality filters
+    order_id IS NOT NULL
+    AND customer_id IS NOT NULL
+    AND product_id IS NOT NULL
+    AND order_date IS NOT NULL
+    AND total_amount >= 0
+
     order_id IS NOT NULL
     AND customer_id IS NOT NULL
     AND order_date IS NOT NULL

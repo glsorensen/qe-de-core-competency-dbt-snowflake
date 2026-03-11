@@ -12,24 +12,57 @@ models:
     columns:
       - name: customer_id
         tests: [unique, not_null]
+        description: Unique customer identifier
+      - name: first_name
+        tests: [not_null]
+        description: Customer first name
+      - name: last_name
+        tests: [not_null]
+        description: Customer last name
       - name: email
         tests: [unique, not_null]
+        description: Customer email address
+      - name: phone
+        description: Customer phone number
+      - name: address
+        description: Customer street address
+      - name: city
+        description: Customer city
+      - name: state
+        description: Customer state
+      - name: zip_code
+        description: Customer zip code
+      - name: created_at
+        tests: [not_null]
+        description: Account creation date
 
   - name: stg_products
-    description: Cleaned product catalog with calculated margins
+    description: Cleaned product catalog
     columns:
       - name: product_id
         tests: [unique, not_null]
+        description: Unique product identifier
+      - name: product_name
+        tests: [not_null]
+        description: Product name (standardized)
+      - name: category
+        tests: [not_null]
+        description: Product category (standardized)
       - name: price
         tests: [not_null]
-      - name: cost
+        description: Product price
+      - name: stock_quantity
         tests: [not_null]
+        description: Current stock quantity
+      - name: description
+        description: Product description
 
   - name: stg_orders
-    description: Cleaned order data with business flags
+    description: Cleaned order data with order details
     columns:
       - name: order_id
         tests: [unique, not_null]
+        description: Unique order identifier
       - name: customer_id
         tests:
           - not_null
@@ -37,54 +70,33 @@ models:
               arguments:
                 to: ref('stg_customers')
                 field: customer_id
-      - name: order_status
-        tests:
-          - accepted_values:
-              values:
-                [
-                  'pending',
-                  'processing',
-                  'shipped',
-                  'delivered',
-                  'cancelled',
-                  'returned',
-                ]
-
-  - name: stg_order_items
-    description: Cleaned order line items with discount calculations
-    columns:
-      - name: order_item_id
-        tests: [unique, not_null]
-      - name: order_id
-        tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_orders')
-                field: order_id
+        description: Customer who placed the order
       - name: product_id
+        tests: [not_null]
+        description: Product in the order
+      - name: quantity
+        tests: [not_null]
+        description: Quantity ordered
+      - name: order_date
+        tests: [not_null]
+        description: Order date
+      - name: status
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_products')
-                field: product_id
-
-  - name: stg_marketing_campaigns
-    description: Cleaned marketing campaign data with KPIs
-    columns:
-      - name: campaign_id
-        tests: [unique, not_null]
-      - name: campaign_type
-        tests:
           - accepted_values:
-              values:
-                [
-                  'email',
-                  'social',
-                  'search',
-                  'display',
-                  'affiliate',
-                  'influencer',
-                  'other',
-                ]
+              values: ['completed', 'pending', 'processing']
+        description: Order status
+      - name: total_amount
+        tests: [not_null]
+        description: Total order amount
+      - name: order_year
+        description: Year extracted from order date
+      - name: order_month
+        description: Month extracted from order date
+      - name: order_quarter
+        description: Quarter extracted from order date
+      - name: order_year_month
+        description: Year-month identifier
+      - name: order_day_of_week
+        description: Day of week of order
+

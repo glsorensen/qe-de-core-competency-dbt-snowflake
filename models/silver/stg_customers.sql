@@ -10,8 +10,7 @@
 --
 -- Transformations applied:
 -- - Name and email standardization
--- - Phone number cleansing
--- - Age and tenure calculations
+-- - Phone number formatting
 -- - Data quality filters
 -- ============================================================================
 
@@ -22,12 +21,11 @@ WITH source_data AS (
         last_name,
         email,
         phone,
-        date_of_birth,
-        created_at,
-        updated_at,
-        customer_lifetime_value,
-        acquisition_channel,
-        loyalty_points
+        address,
+        city,
+        state,
+        zip_code,
+        created_at
     FROM {{ source('raw', 'customers') }}
 )
 
@@ -39,24 +37,17 @@ SELECT
     TRIM(INITCAP(last_name)) AS last_name,
     TRIM(LOWER(email)) AS email,
     
-    -- Phone formatting (remove non-numeric characters)
-    REGEXP_REPLACE(phone, '[^0-9]', '') AS phone_clean,
+    -- Phone formatting
+    phone,
+    
+    -- Address fields
+    address,
+    city,
+    state,
+    zip_code,
     
     -- Date fields
-    date_of_birth,
     created_at,
-    updated_at,
-    
-    -- Financial fields
-    COALESCE(customer_lifetime_value, 0) AS customer_lifetime_value,
-    COALESCE(loyalty_points, 0) AS loyalty_points,
-    
-    -- Categorization
-    LOWER(acquisition_channel) AS acquisition_channel,
-    
-    -- Derived fields
-    DATEDIFF('year', date_of_birth, CURRENT_DATE()) AS customer_age,
-    DATEDIFF('day', created_at, CURRENT_DATE()) AS days_since_signup,
     
     -- Metadata
     CURRENT_TIMESTAMP() AS dbt_updated_at

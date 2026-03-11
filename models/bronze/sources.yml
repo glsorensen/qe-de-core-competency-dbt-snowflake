@@ -29,8 +29,6 @@ sources:
             tests:
               - unique
               - not_null
-          - name: loyalty_points
-            description: Loyalty points accumulated by the customer
 
       # Order transactions
       - name: orders
@@ -46,32 +44,12 @@ sources:
             tests:
               - not_null
 
-      # Order line items
-      - name: order_items
-        description: Individual products within each order
-        columns:
-          - name: order_item_id
-            description: Unique line item identifier
-            tests:
-              - unique
-              - not_null
-
       # Product catalog
       - name: products
         description: Product catalog data
         columns:
           - name: product_id
             description: Unique product identifier
-            tests:
-              - unique
-              - not_null
-
-      # Marketing campaigns
-      - name: marketing_campaigns
-        description: Marketing campaign performance data
-        columns:
-          - name: campaign_id
-            description: Unique campaign identifier
             tests:
               - unique
               - not_null
