@@ -38,7 +38,7 @@ cleaned AS (
 
         -- Order details
         order_date::DATE AS order_date,
-        LOWER(TRIM(status)) AS status,
+        LOWER(TRIM(status)) AS order_status,
         
         -- Quantity
         quantity,
@@ -66,12 +66,6 @@ SELECT *
 FROM cleaned
 WHERE
     -- Data quality filters
-    order_id IS NOT NULL
-    AND customer_id IS NOT NULL
-    AND product_id IS NOT NULL
-    AND order_date IS NOT NULL
-    AND total_amount >= 0
-
     order_id IS NOT NULL
     AND customer_id IS NOT NULL
     AND order_date IS NOT NULL

@@ -19,7 +19,7 @@ WITH orders AS (
         order_id,
         order_date,
         total_amount,
-        status
+        order_status
     FROM {{ ref('stg_orders') }}
 ),
 
@@ -31,7 +31,7 @@ monthly_aggregates AS (
         
         -- Order counts
         COUNT(DISTINCT order_id) AS total_orders,
-        COUNT(DISTINCT CASE WHEN status = 'completed' THEN order_id END) AS completed_orders,
+        COUNT(DISTINCT CASE WHEN order_status = 'completed' THEN order_id END) AS completed_orders,
         
         -- Revenue metrics
         SUM(total_amount) AS total_revenue,

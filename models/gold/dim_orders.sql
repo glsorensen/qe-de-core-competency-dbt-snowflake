@@ -23,7 +23,7 @@ WITH orders as (
         o.quantity,
         o.order_date,
         o.total_amount,
-        o.status,
+        o.order_status,
         c.first_name,
         c.last_name,
         c.email,
@@ -33,9 +33,9 @@ WITH orders as (
         p.category,
         p.price as product_price,
         CASE
-            WHEN o.status = 'completed' THEN 'completed'
-            WHEN o.status = 'pending' THEN 'pending'
-            WHEN o.status = 'processing' THEN 'processing'
+            WHEN o.order_status = 'completed' THEN 'completed'
+            WHEN o.order_status = 'pending' THEN 'pending'
+            WHEN o.order_status = 'processing' THEN 'processing'
             ELSE 'other'
         END as order_status_category,
         YEAR(o.order_date) as order_year,

@@ -24,14 +24,14 @@ dim_orders AS (
         product_id,
         quantity,
         total_amount,
-        status
+        order_status
     FROM {{ ref('dim_orders') }}
 ),
 
 product_sales AS (
     SELECT
         product_id,
-        COUNT(DISTINCT CASE WHEN status = 'completed' THEN product_id END) AS completed_orders,
+        COUNT(DISTINCT CASE WHEN order_status = 'completed' THEN product_id END) AS completed_orders,
         SUM(quantity) AS total_units_sold,
         SUM(total_amount) AS total_revenue,
         AVG(total_amount) AS avg_order_value
